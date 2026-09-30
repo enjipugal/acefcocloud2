@@ -1,0 +1,2168 @@
+/* =========================================================
+   ECOAST HUB - ANNOUNCEMENTS PAGE
+   MATCHED WITH OTHER NON-HOME PAGES
+   ========================================================= */
+
+
+/* =========================================================
+   VARIABLES
+   ========================================================= */
+
+:root {
+
+    --maroon: #7b1e2b;
+    --maroon-dark: #55121c;
+    --maroon-deep: #3d0d14;
+    --maroon-light: #9b3040;
+
+    --white: #ffffff;
+    --off-white: #f8f8f8;
+    --light-gray: #eeeeee;
+    --gray: #777777;
+    --dark-gray: #333333;
+    --black: #171717;
+
+    --shadow:
+        0 15px 40px rgba(0, 0, 0, 0.08);
+
+    --transition:
+        0.3s ease;
+}
+
+
+
+/* =========================================================
+   RESET
+   ========================================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+html {
+    scroll-behavior: smooth;
+}
+
+
+body {
+
+    font-family:
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
+    color: var(--dark-gray);
+
+    background: var(--white);
+
+    line-height: 1.6;
+
+    overflow-x: hidden;
+}
+
+
+a {
+
+    color: inherit;
+
+    text-decoration: none;
+}
+
+
+button {
+
+    font-family: inherit;
+
+    cursor: pointer;
+}
+
+
+
+/* =========================================================
+   NAVBAR
+   SAME SIZING AS OTHER PAGES
+   ========================================================= */
+
+.navbar {
+
+    position: relative;
+
+    width: 100%;
+
+    z-index: 1000;
+
+    background: #ffffff;
+
+    border-bottom:
+        1px solid rgba(0, 0, 0, 0.03);
+}
+
+
+.nav-container {
+
+    width: min(1300px, 90%);
+
+    min-height: 82px;
+
+    margin: 0 auto;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+}
+
+
+
+/* =========================================================
+   LOGO
+   ========================================================= */
+
+.brand {
+
+    display: flex;
+
+    align-items: center;
+
+    flex-shrink: 0;
+}
+
+
+.brand-logo {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+}
+
+
+.brand-logo img {
+
+    display: block;
+
+    width: 68px;
+
+    height: auto;
+
+    object-fit: contain;
+}
+
+
+
+/* =========================================================
+   NAVIGATION
+   SAME HIGHLIGHTING AS OTHER PAGES
+   ========================================================= */
+
+.nav-menu {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+}
+
+
+.nav-link {
+
+    position: relative;
+
+    padding:
+        28px 14px 24px;
+
+    color: #555555;
+
+    font-size: 0.94rem;
+
+    font-weight: 600;
+
+    transition:
+        color var(--transition);
+}
+
+
+.nav-link::after {
+
+    content: "";
+
+    position: absolute;
+
+    left: 14px;
+
+    right: 14px;
+
+    bottom: 18px;
+
+    height: 2px;
+
+    background: var(--maroon);
+
+    transform: scaleX(0);
+
+    transform-origin: center;
+
+    transition:
+        transform var(--transition);
+}
+
+
+.nav-link:hover,
+.nav-link.active {
+
+    color: var(--maroon);
+}
+
+
+.nav-link:hover::after,
+.nav-link.active::after {
+
+    transform: scaleX(1);
+}
+
+
+
+/* =========================================================
+   MOBILE MENU
+   ========================================================= */
+
+.menu-toggle {
+
+    display: none;
+
+    width: 42px;
+
+    height: 42px;
+
+    border: none;
+
+    background: transparent;
+}
+
+
+.menu-toggle span {
+
+    display: block;
+
+    width: 24px;
+
+    height: 2px;
+
+    margin: 5px auto;
+
+    background: var(--maroon);
+
+    transition: var(--transition);
+}
+
+
+
+/* =========================================================
+   GENERAL CONTAINER
+   SAME AS OTHER PAGES
+   ========================================================= */
+
+.section-container {
+
+    width: min(1300px, 90%);
+
+    margin: 0 auto;
+}
+
+
+
+/* =========================================================
+   PAGE HERO
+   SAME SIZE AS OTHER PAGES
+   ========================================================= */
+
+.page-hero {
+
+    position: relative;
+
+    min-height: 463px;
+
+    display: flex;
+
+    align-items: center;
+
+    overflow: hidden;
+
+    background:
+        linear-gradient(
+            135deg,
+            #640015 0%,
+            #730019 48%,
+            #620014 100%
+        );
+
+    color: var(--white);
+}
+
+
+
+/* =========================================================
+   HERO BACKGROUND
+   ========================================================= */
+
+.page-hero-background {
+
+    position: absolute;
+
+    inset: 0;
+
+    overflow: hidden;
+}
+
+
+
+/* =========================================================
+   TECH LINES
+   ========================================================= */
+
+.tech-line {
+
+    position: absolute;
+
+    height: 1px;
+
+    background:
+        rgba(255, 255, 255, 0.14);
+
+    transform-origin: left center;
+}
+
+
+.line-1 {
+
+    width: 350px;
+
+    top: 28%;
+
+    right: 15%;
+
+    transform: rotate(-25deg);
+}
+
+
+.line-2 {
+
+    width: 300px;
+
+    top: 48%;
+
+    right: 7%;
+
+    transform: rotate(38deg);
+}
+
+
+.line-3 {
+
+    width: 260px;
+
+    bottom: 25%;
+
+    right: 18%;
+
+    transform: rotate(-35deg);
+}
+
+
+.line-4 {
+
+    width: 240px;
+
+    top: 30%;
+
+    left: 52%;
+
+    transform: rotate(-15deg);
+}
+
+
+
+/* =========================================================
+   TECH NODES
+   ========================================================= */
+
+.tech-node {
+
+    position: absolute;
+
+    width: 9px;
+
+    height: 9px;
+
+    border-radius: 50%;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 0 0 6px
+            rgba(255, 255, 255, 0.08),
+        0 0 20px
+            rgba(255, 255, 255, 0.25);
+
+    animation:
+        nodePulse 3s infinite ease-in-out;
+}
+
+
+.node-1 {
+
+    top: 25%;
+
+    right: 35%;
+}
+
+
+.node-2 {
+
+    top: 43%;
+
+    right: 12%;
+
+    animation-delay: 0.6s;
+}
+
+
+.node-3 {
+
+    top: 69%;
+
+    right: 41%;
+
+    animation-delay: 1s;
+}
+
+
+.node-4 {
+
+    top: 57%;
+
+    left: 60%;
+
+    animation-delay: 1.5s;
+}
+
+
+
+/* =========================================================
+   GEARS
+   ========================================================= */
+
+.gear {
+
+    position: absolute;
+
+    color:
+        rgba(255, 255, 255, 0.08);
+
+    line-height: 1;
+
+    user-select: none;
+
+    animation:
+        rotateGear 22s linear infinite;
+}
+
+
+.gear-large {
+
+    right: -55px;
+
+    bottom: -75px;
+
+    font-size: 17rem;
+}
+
+
+.gear-small {
+
+    right: 16%;
+
+    top: 55px;
+
+    font-size: 7rem;
+
+    animation-direction: reverse;
+
+    animation-duration: 15s;
+}
+
+
+
+/* =========================================================
+   HERO CONTENT
+   SAME SIZING AS OTHER PAGES
+   ========================================================= */
+
+.page-hero-content {
+
+    position: relative;
+
+    z-index: 5;
+
+    max-width: 780px;
+
+    padding: 95px 0;
+}
+
+
+.eyebrow {
+
+    display: inline-block;
+
+    margin-bottom: 12px;
+
+    color: var(--maroon);
+
+    font-size: 0.76rem;
+
+    font-weight: 800;
+
+    letter-spacing: 2.5px;
+}
+
+
+.page-hero .eyebrow {
+
+    color:
+        rgba(255, 255, 255, 0.8);
+}
+
+
+.page-hero h1 {
+
+    color: #ffffff;
+
+    font-size:
+        clamp(3rem, 6vw, 5rem);
+
+    line-height: 1.02;
+
+    letter-spacing: -2px;
+}
+
+
+.page-hero p {
+
+    max-width: 670px;
+
+    margin-top: 25px;
+
+    color:
+        rgba(255, 255, 255, 0.78);
+
+    font-size: 1.08rem;
+
+    line-height: 1.65;
+}
+
+
+
+/* =========================================================
+   GENERAL SECTION
+   ========================================================= */
+
+.section {
+
+    width: 100%;
+}
+
+
+.exam-section {
+
+    padding:
+        105px 0 110px;
+
+    background: #ffffff;
+}
+
+
+
+/* =========================================================
+   SECTION HEADING
+   SAME SCALE AS OTHER PAGES
+   ========================================================= */
+
+.section-heading {
+
+    max-width: 760px;
+
+    margin-bottom: 50px;
+}
+
+
+.section-heading .eyebrow {
+
+    margin-bottom: 7px;
+}
+
+
+.section-heading h2 {
+
+    color: var(--black);
+
+    font-size:
+        clamp(2.2rem, 4vw, 3.2rem);
+
+    line-height: 1.1;
+
+    letter-spacing: -1px;
+}
+
+
+.section-heading p {
+
+    max-width: 700px;
+
+    margin-top: 16px;
+
+    color: var(--gray);
+
+    font-size: 1rem;
+
+    line-height: 1.7;
+}
+
+
+
+/* =========================================================
+   EXAM GRID
+   ========================================================= */
+
+.exam-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 24px;
+}
+
+
+
+/* =========================================================
+   EXAM CARD
+   ========================================================= */
+
+.exam-card {
+
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border:
+        1px solid #e7e7e7;
+
+    border-radius: 10px;
+
+    box-shadow:
+        0 6px 22px
+        rgba(0, 0, 0, 0.045);
+
+    transition:
+        transform var(--transition),
+        box-shadow var(--transition);
+
+    animation:
+        cardAppear 0.55s ease both;
+}
+
+
+.exam-card:nth-child(1) {
+    animation-delay: 0.05s;
+}
+
+
+.exam-card:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+
+.exam-card:nth-child(3) {
+    animation-delay: 0.15s;
+}
+
+
+.exam-card:nth-child(4) {
+    animation-delay: 0.2s;
+}
+
+
+.exam-card:hover {
+
+    transform: translateY(-7px);
+
+    box-shadow: var(--shadow);
+}
+
+
+
+/* =========================================================
+   EXAM CARD TOP
+   ========================================================= */
+
+.exam-card-top {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 18px 20px;
+
+    background:
+        var(--maroon);
+
+    color: #ffffff;
+}
+
+
+.exam-number {
+
+    font-size: 0.78rem;
+
+    font-weight: 800;
+
+    letter-spacing: 1px;
+}
+
+
+.exam-type {
+
+    font-size: 0.68rem;
+
+    font-weight: 800;
+
+    letter-spacing: 1.3px;
+
+    opacity: 0.82;
+}
+
+
+
+/* =========================================================
+   EXAM CARD BODY
+   ========================================================= */
+
+.exam-card-body {
+
+    min-height: 255px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    padding: 25px;
+}
+
+
+.exam-card-body h3 {
+
+    color: var(--black);
+
+    font-size: 1.18rem;
+
+    line-height: 1.3;
+}
+
+
+
+/* =========================================================
+   EXAM DATE
+   ========================================================= */
+
+.exam-date {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+
+    margin-top: 25px;
+}
+
+
+.calendar-icon {
+
+    flex-shrink: 0;
+
+    width: 46px;
+
+    height: 46px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 8px;
+
+    background:
+        #f7f1f2;
+
+    color: var(--maroon);
+
+    font-size: 0.78rem;
+
+    font-weight: 800;
+}
+
+
+.exam-date small {
+
+    display: block;
+
+    margin-bottom: 3px;
+
+    color: var(--gray);
+
+    font-size: 0.62rem;
+
+    font-weight: 800;
+
+    letter-spacing: 1.1px;
+}
+
+
+.exam-date strong {
+
+    display: block;
+
+    color: var(--black);
+
+    font-size: 0.84rem;
+
+    line-height: 1.4;
+}
+
+
+
+/* =========================================================
+   SCHEDULE BUTTON
+   ========================================================= */
+
+.schedule-btn {
+
+    margin-top: auto;
+
+    padding: 0;
+
+    border: none;
+
+    background: transparent;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 10px;
+
+    color: var(--maroon);
+
+    font-size: 0.83rem;
+
+    font-weight: 800;
+
+    text-align: left;
+
+    transition:
+        color var(--transition);
+}
+
+
+.schedule-btn span {
+
+    font-size: 1rem;
+
+    transition:
+        transform var(--transition);
+}
+
+
+.schedule-btn:hover {
+
+    color: var(--maroon-dark);
+}
+
+
+.schedule-btn:hover span {
+
+    transform:
+        translateX(5px);
+}
+
+
+
+/* =========================================================
+   IMPORTANT NOTE
+   ========================================================= */
+
+.exam-note-section {
+
+    padding: 70px 0;
+
+    background:
+        var(--off-white);
+}
+
+
+.exam-note {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 25px;
+
+    padding: 38px;
+
+    border:
+        1px solid
+        rgba(123, 30, 43, 0.08);
+
+    border-radius: 12px;
+
+    background:
+        #f7f1f2;
+}
+
+
+.exam-note-mark {
+
+    flex-shrink: 0;
+
+    width: 58px;
+
+    height: 58px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 12px;
+
+    background: var(--maroon);
+
+    color: #ffffff;
+
+    font-size: 1.4rem;
+
+    font-weight: 800;
+}
+
+
+.exam-note-content .eyebrow {
+
+    margin-bottom: 4px;
+}
+
+
+.exam-note-content h3 {
+
+    margin-bottom: 8px;
+
+    color: var(--black);
+
+    font-size: 1.7rem;
+
+    line-height: 1.2;
+}
+
+
+.exam-note-content p {
+
+    max-width: 850px;
+
+    color: var(--gray);
+
+    font-size: 0.92rem;
+
+    line-height: 1.7;
+}
+
+
+
+/* =========================================================
+   CTA
+   SAME SIZING AS OTHER PAGES
+   ========================================================= */
+
+.cta-section {
+
+    padding: 75px 0;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--maroon-dark),
+            var(--maroon)
+        );
+
+    color: #ffffff;
+}
+
+
+.cta-container {
+
+    width: min(1300px, 90%);
+
+    margin: 0 auto;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 40px;
+}
+
+
+.cta-content {
+
+    max-width: 700px;
+}
+
+
+.cta-content .eyebrow {
+
+    color:
+        rgba(255, 255, 255, 0.72);
+}
+
+
+.cta-content h2 {
+
+    color: #ffffff;
+
+    font-size:
+        clamp(2rem, 4vw, 3rem);
+
+    line-height: 1.1;
+}
+
+
+.cta-content h2 span {
+
+    color: #e7b0b8;
+}
+
+
+.cta-content p {
+
+    margin-top: 15px;
+
+    color:
+        rgba(255, 255, 255, 0.76);
+}
+
+
+.btn-light {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    padding: 13px 22px;
+
+    border-radius: 6px;
+
+    background: #ffffff;
+
+    color: var(--maroon);
+
+    font-size: 0.86rem;
+
+    font-weight: 800;
+
+    transition: var(--transition);
+}
+
+
+.btn-light:hover {
+
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 12px 25px
+        rgba(0, 0, 0, 0.18);
+}
+
+
+
+/* =========================================================
+   SCHEDULE MODAL
+   ========================================================= */
+
+.schedule-modal {
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 3000;
+
+    display: none;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 20px;
+}
+
+
+.schedule-modal.show {
+
+    display: flex;
+}
+
+
+.schedule-modal-overlay {
+
+    position: absolute;
+
+    inset: 0;
+
+    background:
+        rgba(20, 8, 11, 0.72);
+
+    backdrop-filter: blur(5px);
+
+    animation:
+        overlayAppear 0.25s ease;
+}
+
+
+.schedule-modal-box {
+
+    position: relative;
+
+    z-index: 2;
+
+    width: min(850px, 100%);
+
+    max-height: 90vh;
+
+    overflow-y: auto;
+
+    border-radius: 14px;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 25px 70px
+        rgba(0, 0, 0, 0.3);
+
+    animation:
+        modalAppear 0.3s ease;
+}
+
+
+
+/* =========================================================
+   MODAL HEADER
+   ========================================================= */
+
+.modal-header {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    justify-content: space-between;
+
+    gap: 30px;
+
+    padding: 32px;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--maroon-dark),
+            var(--maroon)
+        );
+
+    color: #ffffff;
+}
+
+
+.modal-heading {
+
+    min-width: 0;
+}
+
+
+.modal-heading .eyebrow {
+
+    margin-bottom: 6px;
+
+    color:
+        rgba(255, 255, 255, 0.72);
+}
+
+
+.modal-heading h2 {
+
+    color: #ffffff;
+
+    font-size:
+        clamp(1.7rem, 4vw, 2.35rem);
+
+    line-height: 1.15;
+}
+
+
+.modal-heading p {
+
+    margin-top: 8px;
+
+    color:
+        rgba(255, 255, 255, 0.76);
+
+    font-size: 0.9rem;
+}
+
+
+.modal-close {
+
+    flex-shrink: 0;
+
+    width: 40px;
+
+    height: 40px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.25);
+
+    border-radius: 50%;
+
+    background:
+        rgba(255, 255, 255, 0.08);
+
+    color: #ffffff;
+
+    font-size: 1.7rem;
+
+    line-height: 1;
+
+    transition:
+        background var(--transition),
+        transform var(--transition);
+}
+
+
+.modal-close:hover {
+
+    background:
+        rgba(255, 255, 255, 0.18);
+
+    transform: rotate(90deg);
+}
+
+
+
+/* =========================================================
+   MODAL SECTIONS
+   ========================================================= */
+
+.modal-section {
+
+    padding: 25px 32px 0;
+}
+
+
+.modal-label {
+
+    display: block;
+
+    margin-bottom: 10px;
+
+    color: var(--gray);
+
+    font-size: 0.67rem;
+
+    font-weight: 800;
+
+    letter-spacing: 1.5px;
+}
+
+
+
+/* =========================================================
+   PROGRAM TABS
+   ========================================================= */
+
+.program-tabs {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 8px;
+}
+
+
+.program-tab,
+.year-tab {
+
+    min-width: 54px;
+
+    padding: 10px 16px;
+
+    border:
+        1px solid #dddddd;
+
+    border-radius: 6px;
+
+    background: #ffffff;
+
+    color: var(--gray);
+
+    font-size: 0.8rem;
+
+    font-weight: 800;
+
+    transition:
+        background var(--transition),
+        border-color var(--transition),
+        color var(--transition);
+}
+
+
+.program-tab:hover,
+.year-tab:hover {
+
+    border-color: var(--maroon-light);
+
+    color: var(--maroon);
+}
+
+
+.program-tab.active,
+.year-tab.active {
+
+    border-color: var(--maroon);
+
+    background: var(--maroon);
+
+    color: #ffffff;
+}
+
+
+
+/* =========================================================
+   PROGRAM TITLE
+   ========================================================= */
+
+.modal-program-title {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 16px;
+
+    margin:
+        25px 32px 0;
+
+    padding:
+        20px;
+
+    border:
+        1px solid #eeeeee;
+
+    border-radius: 10px;
+
+    background: var(--off-white);
+}
+
+
+.modal-program-title > span {
+
+    width: 50px;
+
+    height: 50px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 8px;
+
+    background: var(--maroon);
+
+    color: #ffffff;
+
+    font-size: 0.78rem;
+
+    font-weight: 800;
+}
+
+
+.modal-program-title small {
+
+    display: block;
+
+    margin-bottom: 2px;
+
+    color: var(--gray);
+
+    font-size: 0.6rem;
+
+    font-weight: 800;
+
+    letter-spacing: 1.2px;
+}
+
+
+.modal-program-title h3 {
+
+    color: var(--black);
+
+    font-size: 1.15rem;
+
+    line-height: 1.3;
+}
+
+
+
+/* =========================================================
+   YEAR TABS
+   ========================================================= */
+
+.year-tabs {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 8px;
+
+    padding-bottom: 25px;
+}
+
+
+
+/* =========================================================
+   MODAL SCHEDULE
+   ========================================================= */
+
+.modal-schedule {
+
+    margin:
+        0 32px;
+
+    border:
+        1px solid #e6e6e6;
+
+    border-radius: 10px;
+
+    overflow: hidden;
+}
+
+
+.schedule-table-wrapper {
+
+    width: 100%;
+
+    overflow-x: auto;
+}
+
+
+.schedule-table {
+
+    width: 100%;
+
+    min-width: 650px;
+
+    border-collapse: collapse;
+}
+
+
+.schedule-table th {
+
+    padding: 13px 15px;
+
+    background: var(--maroon);
+
+    color: #ffffff;
+
+    font-size: 0.7rem;
+
+    font-weight: 800;
+
+    letter-spacing: 0.7px;
+
+    text-align: left;
+}
+
+
+.schedule-table td {
+
+    padding: 14px 15px;
+
+    border-bottom:
+        1px solid #eeeeee;
+
+    color: var(--dark-gray);
+
+    font-size: 0.8rem;
+}
+
+
+.schedule-table tbody tr:last-child td {
+
+    border-bottom: none;
+}
+
+
+.schedule-table tbody tr:hover {
+
+    background: #faf7f8;
+}
+
+
+.to-follow {
+
+    color: var(--maroon);
+
+    font-weight: 700;
+}
+
+
+
+/* =========================================================
+   MODAL FOOTER
+   ========================================================= */
+
+.modal-footer {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding: 25px 32px 32px;
+}
+
+
+.modal-footer p {
+
+    max-width: 550px;
+
+    color: var(--gray);
+
+    font-size: 0.78rem;
+
+    line-height: 1.6;
+}
+
+
+.modal-close-btn {
+
+    flex-shrink: 0;
+
+    padding: 11px 20px;
+
+    border: none;
+
+    border-radius: 6px;
+
+    background: var(--maroon);
+
+    color: #ffffff;
+
+    font-size: 0.82rem;
+
+    font-weight: 800;
+
+    transition: var(--transition);
+}
+
+
+.modal-close-btn:hover {
+
+    background: var(--maroon-dark);
+
+    transform: translateY(-2px);
+}
+
+
+
+/* =========================================================
+   FOOTER
+   MATCHED WITH OTHER PAGES
+   ========================================================= */
+
+.footer {
+
+    background: #171717;
+
+    color: #ffffff;
+}
+
+
+.footer-container {
+
+    width: min(1300px, 90%);
+
+    margin: 0 auto;
+
+    padding:
+        75px 0 65px;
+
+    display: grid;
+
+    grid-template-columns:
+        1.15fr 1fr;
+
+    gap: 80px;
+}
+
+
+.footer-brand {
+
+    max-width: 430px;
+}
+
+
+.footer-brand .brand {
+
+    margin-bottom: 20px;
+}
+
+
+.footer-brand .brand-logo img {
+
+    width: 68px;
+}
+
+
+.footer-brand p {
+
+    color:
+        rgba(255, 255, 255, 0.58);
+
+    font-size: 0.88rem;
+
+    line-height: 1.75;
+}
+
+
+.footer-links {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 40px;
+}
+
+
+.footer-column {
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: flex-start;
+}
+
+
+.footer-column h4 {
+
+    margin-bottom: 17px;
+
+    color: #ffffff;
+
+    font-size: 0.78rem;
+
+    font-weight: 800;
+
+    letter-spacing: 1.2px;
+
+    text-transform: uppercase;
+}
+
+
+.footer-column a {
+
+    margin-bottom: 9px;
+
+    color:
+        rgba(255, 255, 255, 0.55);
+
+    font-size: 0.82rem;
+
+    transition:
+        color var(--transition);
+}
+
+
+.footer-column a:hover {
+
+    color: #ffffff;
+}
+
+
+.footer-bottom {
+
+    width: min(1300px, 90%);
+
+    margin: 0 auto;
+
+    padding:
+        22px 0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    border-top:
+        1px solid
+        rgba(255, 255, 255, 0.08);
+}
+
+
+.footer-bottom p {
+
+    color:
+        rgba(255, 255, 255, 0.4);
+
+    font-size: 0.75rem;
+}
+
+
+.footer-bottom span {
+
+    color:
+        rgba(255, 255, 255, 0.4);
+
+    font-size: 0.72rem;
+
+    font-weight: 800;
+
+    letter-spacing: 1.5px;
+}
+
+
+
+/* =========================================================
+   ANIMATIONS
+   ========================================================= */
+
+@keyframes nodePulse {
+
+    0%,
+    100% {
+        opacity: 0.55;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.35);
+    }
+
+}
+
+
+@keyframes rotateGear {
+
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+
+}
+
+
+@keyframes cardAppear {
+
+    from {
+
+        opacity: 0;
+
+        transform:
+            translateY(20px);
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform:
+            translateY(0);
+    }
+
+}
+
+
+@keyframes overlayAppear {
+
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+
+}
+
+
+@keyframes modalAppear {
+
+    from {
+
+        opacity: 0;
+
+        transform:
+            translateY(20px)
+            scale(0.98);
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform:
+            translateY(0)
+            scale(1);
+    }
+
+}
+
+
+
+/* =========================================================
+   MOBILE NAVIGATION
+   SAME BREAKPOINT AS OTHER PAGES
+   ========================================================= */
+
+@media (max-width: 850px) {
+
+    .menu-toggle {
+
+        display: block;
+    }
+
+
+    .nav-menu {
+
+        position: absolute;
+
+        top: 82px;
+
+        left: 0;
+
+        right: 0;
+
+        display: none;
+
+        flex-direction: column;
+
+        align-items: stretch;
+
+        gap: 0;
+
+        padding: 12px;
+
+        background: #ffffff;
+
+        border-top:
+            1px solid #eeeeee;
+
+        box-shadow:
+            0 15px 30px
+            rgba(0, 0, 0, 0.08);
+    }
+
+
+    .nav-menu.open {
+
+        display: flex;
+    }
+
+
+    .nav-link {
+
+        padding:
+            13px 10px;
+    }
+
+
+    .nav-link::after {
+
+        display: none;
+    }
+
+
+    .page-hero {
+
+        min-height: 410px;
+    }
+
+
+    .exam-grid {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+
+    .footer-container {
+
+        grid-template-columns: 1fr;
+
+        gap: 50px;
+    }
+
+}
+
+
+
+@media (max-width: 600px) {
+
+    .nav-container {
+
+        min-height: 72px;
+    }
+
+
+    .nav-menu {
+
+        top: 72px;
+    }
+
+
+    .brand-logo img {
+
+        width: 60px;
+    }
+
+
+    .page-hero-content {
+
+        padding: 70px 0;
+    }
+
+
+    .page-hero h1 {
+
+        font-size: 2.8rem;
+    }
+
+
+    .page-hero p {
+
+        font-size: 0.92rem;
+    }
+
+
+    .exam-section {
+
+        padding: 75px 0;
+    }
+
+
+    .exam-grid {
+
+        grid-template-columns: 1fr;
+    }
+
+
+    .exam-card-body {
+
+        min-height: 235px;
+    }
+
+
+    .exam-note {
+
+        flex-direction: column;
+
+        padding: 27px;
+    }
+
+
+    .cta-container {
+
+        flex-direction: column;
+
+        align-items: flex-start;
+    }
+
+
+    .schedule-modal {
+
+        padding: 12px;
+    }
+
+
+    .schedule-modal-box {
+
+        max-height: 94vh;
+    }
+
+
+    .modal-header {
+
+        padding: 25px;
+
+        gap: 15px;
+    }
+
+
+    .modal-section {
+
+        padding:
+            22px 25px 0;
+    }
+
+
+    .modal-program-title {
+
+        margin:
+            22px 25px 0;
+    }
+
+
+    .modal-schedule {
+
+        margin:
+            0 25px;
+    }
+
+
+    .modal-footer {
+
+        flex-direction: column;
+
+        align-items: flex-start;
+
+        padding:
+            22px 25px 25px;
+    }
+
+
+    .footer-links {
+
+        grid-template-columns:
+            1fr 1fr;
+    }
+
+
+    .footer-bottom {
+
+        flex-direction: column;
+
+        align-items: flex-start;
+    }
+
+}
+
+
+
+@media (max-width: 400px) {
+
+    .footer-links {
+
+        grid-template-columns: 1fr;
+    }
+
+
+    .page-hero h1 {
+
+        font-size: 2.35rem;
+    }
+
+
+    .modal-program-title {
+
+        padding: 15px;
+    }
+
+
+    .modal-program-title > span {
+
+        width: 44px;
+
+        height: 44px;
+    }
+
+}
+
+
+
+/* =========================================================
+   REDUCED MOTION
+   SAME AS OTHER PAGES
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    html {
+
+        scroll-behavior: auto;
+    }
+
+
+    *,
+    *::before,
+    *::after {
+
+        animation-duration:
+            0.01ms !important;
+
+        animation-iteration-count:
+            1 !important;
+
+        transition-duration:
+            0.01ms !important;
+    }
+
+}

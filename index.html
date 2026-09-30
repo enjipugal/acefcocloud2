@@ -1,0 +1,1806 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ECOAST HUB</title>
+
+    <meta name="description" content="ECOAST digital information hub.">
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+
+        .officers-preview {
+            background: #ffffff;
+        }
+
+
+        .officers-layout {
+            display: grid !important;
+
+            grid-template-columns:
+                minmax(0, 0.72fr)
+                minmax(0, 1.28fr) !important;
+
+            align-items: center;
+
+            gap: 70px;
+        }
+
+        .officers-intro {
+            max-width: 520px;
+        }
+
+        .officers-intro .eyebrow {
+            display: block;
+            margin-bottom: 12px;
+        }
+
+
+        .officers-intro h2 {
+            margin: 0;
+            color: #171717;
+            font-size: clamp(2.5rem, 4.5vw, 4rem);
+            line-height: 1.05;
+            letter-spacing: -1.8px;
+        }
+
+        .officers-intro h2 span {
+            color: #650019;
+        }
+
+        .officers-intro p {
+            max-width: 500px;
+            margin: 24px 0 32px;
+            color: #777;
+            font-size: 1rem;
+            line-height: 1.75;
+        }
+
+        .officer-list {
+            width: 100% !important;
+            display: grid !important;
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr)) !important;
+            gap: 0 !important;
+            overflow: hidden;
+            background: #ffffff;
+            border: 1px solid #e4e4e4;
+            border-radius: 14px;
+            box-shadow:
+                0 10px 30px rgba(0, 0, 0, 0.06);
+            padding: 0 !important;
+        }
+
+        .officer-item {
+            position: relative;
+
+            min-width: 0;
+            min-height: 185px;
+
+            display: grid !important;
+            grid-template-columns:
+                32px
+                90px
+                minmax(0, 1fr) !important;
+            align-items: center;
+            column-gap: 16px;
+            padding: 22px 26px !important;
+
+            background: #ffffff;
+            color: inherit;
+
+            text-decoration: none;
+			
+            border: 0 !important;
+            border-radius: 0 !important;
+
+            box-shadow: none !important;
+
+            transform: none;
+
+            transition:
+                background 0.25s ease;
+        }
+
+
+        .officer-item:hover {
+            background: #fafafa;
+
+            transform: none;
+        }
+
+        .officer-item:nth-child(odd) {
+            border-right:
+                1px solid #e8e8e8 !important;
+        }
+
+        .officer-item:nth-child(-n + 2) {
+            border-bottom:
+                1px solid #e8e8e8 !important;
+        }
+
+        .officer-item .officer-number {
+            width: auto !important;
+            height: auto !important;
+
+            display: block !important;
+            margin: 0 !important;
+            padding: 0 !important;
+
+            color: #999 !important;
+            background: transparent !important;
+
+            border: 0 !important;
+            border-radius: 0 !important;
+            box-shadow: none !important;
+
+            font-size: 0.72rem !important;
+            font-weight: 800 !important;
+
+            line-height: 1 !important;
+            letter-spacing: 1px;
+            text-align: left;
+            align-self: start;
+            padding-top: 8px !important;
+        }
+
+        .officer-avatar {
+            position: relative;
+
+            width: 90px !important;
+            height: 120px !important;
+
+            min-width: 90px;
+            min-height: 120px;
+
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+
+            background: #f1f1f1 !important;
+            border: none !important;
+            border-radius: 0 !important;
+
+            box-shadow: none !important;
+            flex-shrink: 0;
+        }
+
+        .officer-avatar::before,
+        .officer-avatar::after {
+            content: none !important;
+            display: none !important;
+        }
+
+        .officer-avatar img {
+            display: block !important;
+
+            width: 100% !important;
+            height: 100% !important;
+
+            max-width: 100% !important;
+            max-height: 100% !important;
+
+            margin: 0 !important;
+            padding: 0 !important;
+			
+            object-fit: contain !important;
+            object-position: center !important;
+
+            background: #f1f1f1 !important;
+            border: none !important;
+            border-radius: 0 !important;
+
+            box-shadow: none !important;
+        }
+
+
+        .officer-details {
+            min-width: 0;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+
+        .officer-details span {
+            display: block;
+            margin: 0 0 6px;
+            padding: 0;
+            color: #650019;
+
+            font-size: 0.68rem;
+            font-weight: 800;
+
+            line-height: 1.25;
+            text-transform: uppercase;
+            letter-spacing: 1.3px;
+        }
+
+
+        .officer-details h3 {
+            margin: 0;
+            padding: 0;
+            color: #171717;
+
+            font-size: 1.05rem;
+            font-weight: 750;
+
+            line-height: 1.25;
+            overflow-wrap: break-word;
+        }
+
+        .officer-item::before,
+        .officer-item::after,
+        .officer-list::before,
+        .officer-list::after {
+            content: none !important;
+            display: none !important;
+        }
+
+        .officer-item .arrow,
+        .officer-item .officer-arrow {
+            display: none !important;
+        }
+
+        @media (max-width: 1100px) {
+
+            .officers-layout {
+                grid-template-columns: 1fr !important;
+                gap: 45px;
+            }
+
+
+            .officers-intro {
+                max-width: 700px;
+            }
+
+        }
+
+
+        @media (max-width: 700px) {
+		
+            .officer-list {
+                grid-template-columns: 1fr !important;
+            }
+
+
+            .officer-item {
+                grid-template-columns:
+                    32px
+                    85px
+                    minmax(0, 1fr) !important;
+
+                min-height: 165px;
+
+                padding: 20px !important;
+            }
+
+
+            .officer-item:nth-child(odd) {
+                border-right: 0 !important;
+            }
+
+            .officer-item:nth-child(-n + 2) {
+                border-bottom: 0 !important;
+            }
+
+            .officer-item:not(:last-child) {
+                border-bottom:
+                    1px solid #e8e8e8 !important;
+            }
+
+            .officer-avatar {
+                width: 85px !important;
+                height: 110px !important;
+
+                min-width: 85px;
+                min-height: 110px;
+            }
+
+        }
+
+        @media (max-width: 480px) {
+
+            .officer-item {
+                grid-template-columns:
+                    28px
+                    75px
+                    minmax(0, 1fr) !important;
+
+                column-gap: 10px;
+
+                padding: 17px !important;
+            }
+
+
+            .officer-avatar {
+                width: 75px !important;
+                height: 100px !important;
+
+                min-width: 75px;
+                min-height: 100px;
+            }
+
+            .officer-details span {
+                font-size: 0.62rem;
+            }
+
+
+            .officer-details h3 {
+                font-size: 0.95rem;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <header class="navbar">
+
+        <div class="nav-container">
+
+            <a
+                href="index.html"
+                class="brand"
+                aria-label="ECOAST HUB Home"
+            >
+
+                <div class="brand-logo">
+
+                    <img
+                        src="ECOAST Logo.png"
+                        alt="ECOAST Logo"
+                    >
+
+                </div>
+
+            </a>
+
+
+            <nav class="nav-menu">
+
+                <a
+                    href="index.html"
+                    class="nav-link active"
+                >
+                    Home
+                </a>
+
+                <a
+                    href="announcements.html"
+                    class="nav-link"
+                >
+                    Announcements
+                </a>
+
+                <a
+                    href="faculties.html"
+                    class="nav-link"
+                >
+                    Faculties
+                </a>
+
+                <a
+                    href="officer.html"
+                    class="nav-link"
+                >
+                    Officers
+                </a>
+
+                <a
+                    href="curriculum.html"
+                    class="nav-link"
+                >
+                    Curriculum
+                </a>
+
+                <a
+                    href="activities.html"
+                    class="nav-link"
+                >
+                    Activities
+                </a>
+
+            </nav>
+
+
+            <button
+                class="menu-toggle"
+                id="menuToggle"
+                type="button"
+                aria-label="Toggle navigation"
+                aria-expanded="false"
+            >
+
+                <span></span>
+                <span></span>
+                <span></span>
+
+            </button>
+
+        </div>
+
+    </header>
+
+    <main>
+
+        <section
+            class="hero"
+            id="home"
+        >
+
+            <div class="hero-tech-grid"></div>
+
+            <div class="hero-line line-one"></div>
+            <div class="hero-line line-two"></div>
+            <div class="hero-line line-three"></div>
+
+            <span class="tech-node node-one"></span>
+            <span class="tech-node node-two"></span>
+            <span class="tech-node node-three"></span>
+            <span class="tech-node node-four"></span>
+
+            <div class="hero-gear gear-large"></div>
+            <div class="hero-gear gear-small"></div>
+
+
+            <div class="hero-container">
+
+                <div class="hero-content">
+
+                    <div class="hero-label">
+
+                        <span class="status-dot"></span>
+
+                        ECOAST DIGITAL HUB
+
+                    </div>
+
+
+                    <h1>
+
+                        Everything ECOAST
+
+                        <span>
+                            in one place.
+                        </span>
+
+                    </h1>
+
+
+                    <p>
+
+                        Your interactive digital information hub
+                        for Engineering and IT students — connecting
+                        you to announcements, faculties, curriculum,
+                        student leaders, and activities.
+
+                    </p>
+
+
+                    <div class="hero-buttons">
+
+                        <a
+                            href="announcements.html"
+                            class="btn btn-primary"
+                        >
+
+                            Explore Hub
+
+                            <span>
+                                →
+                            </span>
+
+                        </a>
+
+
+                        <a
+                            href="faculties.html"
+                            class="btn btn-secondary"
+                        >
+
+                            Meet the Faculty
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <div class="hero-card">
+
+                    <div class="hero-card-header">
+
+                        <div>
+
+                            <span class="small-label">
+                                ECOAST HUB
+                            </span>
+
+                            <h3>
+                                What's happening?
+                            </h3>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="hero-announcement">
+
+                        <div class="announcement-icon">
+                            !
+                        </div>
+
+
+                        <div>
+
+                            <span class="announcement-category">
+                                IMPORTANT
+                            </span>
+
+                            <h4>
+                                Welcome to ECOAST HUB
+                            </h4>
+
+                            <p>
+                                Your central source for Engineering
+                                and IT academic information,
+                                announcements, and student activities.
+                            </p>
+
+                            <span class="announcement-date">
+                                August 2026
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="hero-card-footer">
+
+                        <span>
+                            Stay informed.
+                        </span>
+
+                        <span>
+                            Stay connected. →
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <section class="quick-access">
+
+            <div class="section-container">
+
+                <div class="section-heading compact">
+
+                    <span class="eyebrow">
+                        QUICK ACCESS
+                    </span>
+
+                    <h2>
+                        Find what you need.
+                    </h2>
+
+                    <p>
+                        Quickly access important ECOAST information.
+                    </p>
+
+                </div>
+
+
+                <div class="quick-grid">
+
+
+                    <a
+                        href="announcements.html"
+                        class="quick-card"
+                    >
+
+                        <div class="quick-icon">
+                            01
+                        </div>
+
+                        <div class="quick-card-content">
+
+                            <h3>
+                                Announcements
+                            </h3>
+
+                            <p>
+                                Latest updates and important notices.
+                            </p>
+
+                        </div>
+
+                        <span class="arrow">
+                            ↗
+                        </span>
+
+                    </a>
+
+
+                    <a
+                        href="faculties.html"
+                        class="quick-card"
+                    >
+
+                        <div class="quick-icon">
+                            02
+                        </div>
+
+                        <div class="quick-card-content">
+
+                            <h3>
+                                Faculties
+                            </h3>
+
+                            <p>
+                                Meet the ECOAST faculty.
+                            </p>
+
+                        </div>
+
+                        <span class="arrow">
+                            ↗
+                        </span>
+
+                    </a>
+
+
+                    <a
+                        href="officers.html"
+                        class="quick-card"
+                    >
+
+                        <div class="quick-icon">
+                            03
+                        </div>
+
+                        <div class="quick-card-content">
+
+                            <h3>
+                                Officers
+                            </h3>
+
+                            <p>
+                                Meet the Student Council of ECOAST.
+                            </p>
+
+                        </div>
+
+                        <span class="arrow">
+                            ↗
+                        </span>
+
+                    </a>
+
+
+                    <a
+                        href="curriculum.html"
+                        class="quick-card"
+                    >
+
+                        <div class="quick-icon">
+                            04
+                        </div>
+
+                        <div class="quick-card-content">
+
+                            <h3>
+                                Curriculum
+                            </h3>
+
+                            <p>
+                                Browse programs, years, and subjects.
+                            </p>
+
+                        </div>
+
+                        <span class="arrow">
+                            ↗
+                        </span>
+
+                    </a>
+
+
+                    <a
+                        href="activities.html"
+                        class="quick-card"
+                    >
+
+                        <div class="quick-icon">
+                            05
+                        </div>
+
+                        <div class="quick-card-content">
+
+                            <h3>
+                                Activities
+                            </h3>
+
+                            <p>
+                                Discover upcoming events and activities.
+                            </p>
+
+                        </div>
+
+                        <span class="arrow">
+                            ↗
+                        </span>
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <section class="section announcements-preview">
+
+            <div class="section-container">
+
+                <div class="section-top">
+
+                    <div class="section-heading">
+
+                        <span class="eyebrow">
+                            STAY UPDATED
+                        </span>
+
+                        <h2>
+                            Latest Announcements
+                        </h2>
+
+                        <p>
+                            Important updates and information
+                            from the ECOAST community.
+                        </p>
+
+                    </div>
+
+
+                    <a
+                        href="announcements.html"
+                        class="view-all"
+                    >
+                        View all announcements →
+                    </a>
+
+                </div>
+
+
+                <div class="announcement-grid">
+
+
+                    <article class="announcement-card featured">
+
+                        <div class="card-top">
+
+                            <span class="tag important">
+                                IMPORTANT
+                            </span>
+
+                        </div>
+
+                        <h3>
+                            Welcome to the new ECOAST HUB
+                        </h3>
+
+                        <p>
+                            ECOAST HUB is your digital information
+                            space for Engineering and IT students.
+                            Check the platform regularly for important
+                            updates, activities, and academic information.
+                        </p>
+
+                        <a
+                            href="announcements.html"
+                            class="read-more"
+                        >
+                            Read announcement →
+                        </a>
+
+                    </article>
+
+
+                    <article class="announcement-card">
+
+                        <div class="card-top">
+
+                            <span class="tag academic">
+                                ACADEMIC
+                            </span>
+
+                        </div>
+
+                        <h3>
+                            Academic Information Update
+                        </h3>
+
+                        <p>
+                            Stay updated with academic information,
+                            schedules, curriculum announcements,
+                            and other important student notices.
+                        </p>
+
+                        <a
+                            href="announcements.html"
+                            class="read-more"
+                        >
+                            Read announcement →
+                        </a>
+
+                    </article>
+
+
+                    <article class="announcement-card">
+
+                        <div class="card-top">
+
+                            <span class="tag event">
+                                EVENT
+                            </span>
+
+                        </div>
+
+                        <h3>
+                            Upcoming ECOAST Activities
+                        </h3>
+
+                        <p>
+                            Stay tuned for Engineering and IT events,
+                            competitions, workshops, and student programs.
+                        </p>
+
+                        <a
+                            href="activities.html"
+                            class="read-more"
+                        >
+                            View activities →
+                        </a>
+
+                    </article>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <section class="section faculty-preview">
+
+            <div class="section-container">
+
+                <div class="section-top">
+
+                    <div class="section-heading">
+
+                        <span class="eyebrow">
+                            PEOPLE BEHIND ECOAST
+                        </span>
+
+                        <h2>
+                            Our Faculties
+                        </h2>
+
+                        <p>
+                            Get to know the faculty members
+                            supporting ECOAST students.
+                        </p>
+
+                    </div>
+
+
+                    <a
+                        href="faculties.html"
+                        class="view-all"
+                    >
+                        View all faculty →
+                    </a>
+
+                </div>
+
+
+                <div class="faculty-grid">
+
+
+                    <article class="faculty-card">
+
+                        <div
+                            class="faculty-photo"
+                            style="
+                                height: 245px;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                overflow: hidden;
+                                background: #f1f1f1;
+                            "
+                        >
+
+                            <img
+                                src="DEAN.JPG"
+                                alt="Dean"
+                                style="
+                                    display: block;
+                                    width: 100%;
+                                    height: 100%;
+                                    max-width: 100%;
+                                    max-height: 100%;
+                                    object-fit: contain;
+                                    object-position: center;
+                                "
+                            >
+
+                        </div>
+
+
+                        <div class="faculty-info">
+
+                            <span class="faculty-role">
+                                VP for Finance
+                            </span>
+
+                            <h3>
+                                Dr. Jane M. Fernandez, DIT
+                            </h3>
+
+                            <p>
+                                Dean, ECOAST
+                            </p>
+
+                        </div>
+
+                    </article>
+
+
+                    <article class="faculty-card">
+
+                        <div
+                            class="faculty-photo"
+                            style="
+                                height: 245px;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                overflow: hidden;
+                                background: #f1f1f1;
+                            "
+                        >
+
+                            <img
+                                src="armie.jpeg"
+                                alt="ECOAST Faculty Member"
+                                style="
+                                    display: block;
+                                    width: 100%;
+                                    height: 100%;
+                                    max-width: 100%;
+                                    max-height: 100%;
+                                    object-fit: contain;
+                                    object-position: center;
+                                "
+                            >
+
+                        </div>
+
+
+                        <div class="faculty-info">
+
+                            <span class="faculty-role">
+                                Information Technology
+                            </span>
+
+                            <h3>
+                                Ms. Armie Q. Valencia
+                            </h3>
+
+                            <p>
+                                Faculty, ECOAST
+                            </p>
+
+                        </div>
+
+                    </article>
+
+
+                    <article class="faculty-card">
+
+                        <div
+                            class="faculty-photo"
+                            style="
+                                height: 245px;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                overflow: hidden;
+                                background: #f1f1f1;
+                            "
+                        >
+
+                            <img
+                                src="GAL.JPG"
+                                alt="ECOAST Faculty Member"
+                                style="
+                                    display: block;
+                                    width: 100%;
+                                    height: 100%;
+                                    max-width: 100%;
+                                    max-height: 100%;
+                                    object-fit: contain;
+                                    object-position: center;
+                                "
+                            >
+
+                        </div>
+
+
+                        <div class="faculty-info">
+
+                            <span class="faculty-role">
+                                Engineering
+                            </span>
+
+                            <h3>
+                                Engr. Jay-R N. Galwardo, RCE
+                            </h3>
+
+                            <p>
+                                Faculty, ECOAST
+                            </p>
+
+                        </div>
+
+                    </article>
+
+
+                    <article class="faculty-card">
+
+                        <div
+                            class="faculty-photo"
+                            style="
+                                height: 245px;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                overflow: hidden;
+                                background: #f1f1f1;
+                            "
+                        >
+
+                            <img
+                                src="kim.jpeg"
+                                alt="ECOAST Faculty Member"
+                                style="
+                                    display: block;
+                                    width: 100%;
+                                    height: 100%;
+                                    max-width: 100%;
+                                    max-height: 100%;
+                                    object-fit: contain;
+                                    object-position: center;
+                                "
+                            >
+
+                        </div>
+
+
+                        <div class="faculty-info">
+
+                            <span class="faculty-role">
+                                Engineering
+                            </span>
+
+                            <h3>
+                                Engr. Kim John Urbiztondo, REE
+                            </h3>
+
+                            <p>
+                                Faculty, ECOAST
+                            </p>
+
+                        </div>
+
+                    </article>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <section class="section officers-preview">
+
+            <div class="section-container">
+
+                <div class="officers-layout">
+
+                    <div class="officers-intro">
+
+                        <span class="eyebrow">
+                            STUDENT LEADERSHIP
+                        </span>
+
+
+                        <h2>
+
+                            Meet the
+
+                            <span>
+                                ECOAST Officers.
+                            </span>
+
+                        </h2>
+
+
+                        <p>
+
+                            Meet the student leaders representing
+                            the ECOAST community.
+
+                        </p>
+
+
+                        <a
+                            href="officers.html"
+                            class="btn btn-secondary"
+                        >
+
+                            View all officers →
+
+                        </a>
+
+                    </div>
+
+                    <div class="officer-list">
+
+                        <a
+                            href="officer.html"
+                            class="officer-item"
+                        >
+
+                            <div class="officer-number">
+                                01
+                            </div>
+
+
+                            <div class="officer-avatar">
+
+                                <img
+                                    src="luis.jpg"
+                                    alt="ECOAST Governor Luis R. Tingco"
+                                >
+
+                            </div>
+
+
+                            <div class="officer-details">
+
+                                <span>
+                                    Governor
+                                </span>
+
+                                <h3>
+                                    Luis R. Tingco
+                                </h3>
+
+                            </div>
+
+                        </a>
+
+                        <a
+                            href="officer.html"
+                            class="officer-item"
+                        >
+
+                            <div class="officer-number">
+                                02
+                            </div>
+
+
+                            <div class="officer-avatar">
+
+                                <img
+                                    src="diana.jpeg"
+                                    alt="ECOAST Vice Governor Diana Mae E. Ubaldo"
+                                >
+
+                            </div>
+
+
+                            <div class="officer-details">
+
+                                <span>
+                                    Vice Governor
+                                </span>
+
+                                <h3>
+                                    Diana Mae E. Ubaldo
+                                </h3>
+
+                            </div>
+
+                        </a>
+
+                        <a
+                            href="officer.html"
+                            class="officer-item"
+                        >
+
+                            <div class="officer-number">
+                                03
+                            </div>
+
+
+                            <div class="officer-avatar">
+
+                                <img
+                                    src="mark justine.jpeg"
+                                    alt="ECOAST Secretary Mark Justine Layan"
+                                >
+
+                            </div>
+
+
+                            <div class="officer-details">
+
+                                <span>
+                                    Secretary
+                                </span>
+
+                                <h3>
+                                    Mark Justine Layan
+                                </h3>
+
+                            </div>
+
+                        </a>
+
+                        <a
+                            href="officer.html"
+                            class="officer-item"
+                        >
+
+                            <div class="officer-number">
+                                04
+                            </div>
+
+
+                            <div class="officer-avatar">
+
+                                <img
+                                    src="frances.jpeg"
+                                    alt="ECOAST Treasurer Francess Jodievelle Veloria"
+                                >
+
+                            </div>
+
+
+                            <div class="officer-details">
+
+                                <span>
+                                    Treasurer
+                                </span>
+
+                                <h3>
+                                    Francess Jodievelle Veloria
+                                </h3>
+
+                            </div>
+
+                        </a>
+
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <section class="section curriculum-preview">
+
+            <div class="section-container">
+
+                <div class="curriculum-layout">
+
+
+                    <div class="curriculum-intro">
+
+                        <span class="eyebrow">
+                            ACADEMIC GUIDE
+                        </span>
+
+
+                        <h2>
+
+                            Explore the
+
+                            <span>
+                                Curriculum.
+                            </span>
+
+                        </h2>
+
+
+                        <p>
+
+                            Browse the programs offered under
+                            ECOAST Engineering and IT and view
+                            their corresponding curriculum.
+
+                        </p>
+
+
+                        <a
+                            href="curriculum.html"
+                            class="btn btn-primary"
+                        >
+
+                            View Curriculum
+
+                            <span>
+                                →
+                            </span>
+
+                        </a>
+
+                    </div>
+
+
+                    <div class="curriculum-preview-card">
+
+                        <div class="curriculum-header">
+
+                            <div>
+
+                                <span>
+                                    ECOAST PROGRAMS
+                                </span>
+
+                                <h3>
+                                    Engineering & Computing
+                                </h3>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="preview-program">
+
+                            <div class="preview-program-number">
+                                01
+                            </div>
+
+                            <div>
+
+                                <strong>
+                                    Engineering
+                                </strong>
+
+                                <p>
+                                    4-Year Programs
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="preview-program">
+
+                            <div class="preview-program-number">
+                                02
+                            </div>
+
+                            <div>
+
+                                <strong>
+                                    Information Technology
+                                </strong>
+
+                                <p>
+                                    3-Year Program
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="preview-program">
+
+                            <div class="preview-program-number">
+                                03
+                            </div>
+
+                            <div>
+
+                                <strong>
+                                    Computer Science
+                                </strong>
+
+                                <p>
+                                    3-Year Program
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <section class="section activities-preview">
+
+            <div class="section-container">
+
+                <div class="section-top">
+
+                    <div class="section-heading">
+
+                        <span class="eyebrow">
+                            ECOAST LIFE
+                        </span>
+
+                        <h2>
+                            Activities & Events
+                        </h2>
+
+                        <p>
+                            Discover what's happening around
+                            the Engineering and IT community.
+                        </p>
+
+                    </div>
+
+
+                    <a
+                        href="activities.html"
+                        class="view-all"
+                    >
+                        View all activities →
+                    </a>
+
+                </div>
+
+
+                <div class="activity-grid">
+
+
+                    <article class="activity-card">
+
+                        <div class="activity-image">
+
+                            <img
+                                src="ECOAST Week Celebration 2026.jpg"
+                                alt="ECOAST Hardhatting"
+                            >
+
+                        </div>
+
+
+                        <div class="activity-content">
+
+                            <div class="activity-date">
+
+                                <strong>
+                                    27-28
+                                </strong>
+
+                                <span>
+                                    APR
+                                </span>
+
+                            </div>
+
+
+                            <div>
+
+                                <span class="tag event">
+                                    EVENT
+                                </span>
+
+                                <h3>
+                                    ECOAST Week 2026
+                                </h3>
+
+                            </div>
+
+                        </div>
+
+                    </article>
+
+
+                    <article class="activity-card">
+
+                        <div class="activity-image">
+
+                            <img
+                                src="ECOAST School-Based Orientation 2026.jpg"
+                                alt="ECOAST Student Workshop"
+                            >
+
+                        </div>
+
+
+                        <div class="activity-content">
+
+                            <div class="activity-date">
+
+                                <strong>
+                                    27
+                                </strong>
+
+                                <span>
+                                    JUL
+                                </span>
+
+                            </div>
+
+
+                            <div>
+
+                                <span class="tag academic">
+                                    ACADEMIC
+                                </span>
+
+                                <h3>
+                                    ECOAST SBO 2026
+                                </h3>
+
+                            </div>
+
+                        </div>
+
+                    </article>
+
+
+                    <article class="activity-card">
+
+                        <div class="activity-image">
+
+                            <img
+                                src="ECOAST Participates in ASEAN Celebration 2026.jpg"
+                                alt="ECOAST Week 2026"
+                            >
+
+                        </div>
+
+
+                        <div class="activity-content">
+
+                            <div class="activity-date">
+
+                                <strong>
+                                    27-28
+                                </strong>
+
+                                <span>
+                                    AUG
+                                </span>
+
+                            </div>
+
+
+                            <div>
+
+                                <span class="tag important">
+                                    FEATURED
+                                </span>
+
+                                <h3>
+                                    ECOAST X ASEAN 2026
+                                </h3>
+
+                            </div>
+
+                        </div>
+
+                    </article>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <section class="cta-section">
+
+            <div class="cta-container">
+
+                <div class="cta-content">
+
+                    <span class="eyebrow">
+                        ECOAST HUB
+                    </span>
+
+                    <h2>
+
+                        Stay informed.
+
+                        <span>
+                            Stay connected.
+                        </span>
+
+                    </h2>
+
+                    <p>
+
+                        Everything you need as an ECOAST Engineering
+                        and IT student, all in one digital space.
+
+                    </p>
+
+                </div>
+
+
+                <a
+                    href="curriculum.html"
+                    class="btn btn-light"
+                >
+
+                    Explore ECOAST →
+
+                </a>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <footer class="footer">
+
+        <div class="footer-container">
+
+
+            <div class="footer-brand">
+
+                <a
+                    href="index.html"
+                    class="brand"
+                >
+
+                    <div class="brand-logo">
+
+                        <img
+                            src="ECOAST Logo.png"
+                            alt="ECOAST Logo"
+                        >
+
+                    </div>
+
+                </a>
+
+
+                <p>
+
+                    ECOAST HUB is an interactive digital information
+                    platform designed to keep Engineering and IT
+                    students informed, connected, and engaged.
+
+                </p>
+
+            </div>
+
+
+            <div class="footer-links">
+
+
+                <div class="footer-column">
+
+                    <h4>
+                        Explore
+                    </h4>
+
+                    <a href="index.html">
+                        Home
+                    </a>
+
+                    <a href="announcements.html">
+                        Announcements
+                    </a>
+
+                    <a href="faculties.html">
+                        Faculties
+                    </a>
+
+                    <a href="curriculum.html">
+                        Curriculum
+                    </a>
+
+                </div>
+
+
+                <div class="footer-column">
+
+                    <h4>
+                        Community
+                    </h4>
+
+                    <a href="officers.html">
+                        Officers
+                    </a>
+
+                    <a href="activities.html">
+                        Activities
+                    </a>
+
+                    <a href="#">
+                        Student Information
+                    </a>
+
+                </div>
+
+
+                <div class="footer-column">
+
+                    <h4>
+                        System
+                    </h4>
+
+                    <a href="#">
+                        Admin Login
+                    </a>
+
+                    <a href="#">
+                        Help
+                    </a>
+
+                    <a href="#">
+                        Contact
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="footer-bottom">
+
+            <p>
+                © ECOAST Ace Pugal '26. All rights reserved.
+            </p>
+
+            <span>
+                ECOAST HUB
+            </span>
+
+        </div>
+
+    </footer>
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
