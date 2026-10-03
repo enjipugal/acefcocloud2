@@ -1,102 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
+
     <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <meta
-        name="description"
-        content="ECOAST HUB Examination Announcements and Schedules"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="ECOAST HUB Examination Announcements and Schedules">
 
     <title>ECOAST HUB | Examination Announcements</title>
 
-    <link
-        rel="icon"
-        type="image/png"
-        href="ECOAST Logo.png"
-    >
+    <link rel="icon" type="image/png" href="ECOAST Logo.png">
+    <link rel="stylesheet"Nhref="announcements.css">
 
-    <link
-        rel="stylesheet"
-        href="style.css"
-    >
 </head>
-
-
 <body>
-
-    <!-- =====================================================
-         NAVIGATION
-    ====================================================== -->
 
     <header class="navbar">
 
         <div class="nav-container">
 
-            <a
-                href="index.html"
-                class="nav-brand"
-            >
-                <img
-                    src="ECOAST Logo.png"
-                    alt="ECOAST Logo"
-                >
+            <a href="index.html" class="brand">
 
-                <div class="brand-text">
-                    <strong>ECOAST HUB</strong>
-                    <span>Academic Information Hub</span>
+                <div class="brand-logo">
+
+                    <img src="ECOAST Logo.png" alt="ECOAST Logo">
+
                 </div>
+
             </a>
 
+            <nav class="nav-menu">
 
-            <button
-                type="button"
-                class="menu-toggle"
-                id="menuToggle"
-                aria-label="Toggle navigation"
-                aria-expanded="false"
-            >
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-
-
-            <nav
-                class="nav-menu"
-                id="navMenu"
-            >
-
-                <a href="index.html">
+                <a href="index.html" class="nav-link">
                     Home
                 </a>
 
                 <a
                     href="announcements.html"
-                    class="active"
+                    class="nav-link active"
                 >
                     Announcements
                 </a>
 
-                <a href="curriculum.html">
+                <a
+                    href="faculties.html"
+                    class="nav-link"
+                >
+                    Faculties
+                </a>
+
+                <a
+                    href="officer.html"
+                    class="nav-link"
+                >
+                    Officers
+                </a>
+
+                <a
+                    href="curriculum.html"
+                    class="nav-link"
+                >
                     Curriculum
                 </a>
 
-                <a href="faculty.html">
-                    Faculty
-                </a>
-
-                <a href="contact.html">
-                    Contact
+                <a
+                    href="activities.html"
+                    class="nav-link"
+                >
+                    Activities
                 </a>
 
             </nav>
+
+
+            <button
+                class="menu-toggle"
+                id="menuToggle"
+                type="button"
+                aria-label="Toggle navigation"
+                aria-expanded="false"
+            >
+
+                <span></span>
+                <span></span>
+                <span></span>
+
+            </button>
 
         </div>
 
@@ -106,11 +95,11 @@
 
         <section class="page-hero">
 
-            <div class="hero-container">
+            <div class="section-container">
 
-                <div class="hero-content">
+                <div class="page-hero-content">
 
-                    <span class="hero-eyebrow">
+                    <span class="eyebrow">
                         ECOAST HUB
                     </span>
 
@@ -120,9 +109,9 @@
                     </h1>
 
                     <p>
-                        Stay informed about upcoming examinations,
-                        schedules, and important reminders for your
-                        academic program.
+                        Stay informed about upcoming examinations
+                        and important academic dates for the
+                        ECOAST student community.
                     </p>
 
                 </div>
@@ -131,12 +120,6 @@
 
         </section>
 
-
-
-        <!-- =================================================
-             EXAMINATIONS
-        ================================================== -->
-
         <section
             class="exam-section"
             id="examAnnouncements"
@@ -144,32 +127,28 @@
 
             <div class="section-container">
 
-                <div class="section-header">
 
-                    <div>
+                <div class="section-heading">
 
-                        <span class="section-label">
-                            ACADEMIC CALENDAR
-                        </span>
+                    <span class="eyebrow">
+                        ACADEMIC CALENDAR
+                    </span>
 
-                        <h2>
-                            Examination Announcements
-                        </h2>
+                    <h2>
+                        Examination
+                        <span>Dates</span>
+                    </h2>
 
-                        <p>
-                            Check the examination period and view
-                            the schedule according to your program
-                            and year level.
-                        </p>
-
-                    </div>
+                    <p>
+                        Keep track of the scheduled examination
+                        periods throughout the academic term.
+                    </p>
 
                 </div>
-                
+
+
                 <div class="exam-grid">
 
-
-                    <!-- PRELIMINARY -->
                     <article
                         class="exam-card"
                         data-exam-card="preliminary"
@@ -186,7 +165,6 @@
                             </span>
 
                         </div>
-
 
                         <div class="exam-card-body">
 
@@ -210,32 +188,10 @@
 
                             </div>
 
+
                             <p>
-                                The Preliminary Examination will
-                                be conducted during the scheduled
-                                examination period. Students may
-                                view the detailed schedule by
-                                program and year level.
+                                Preliminary examination period.
                             </p>
-
-                        </div>
-
-
-                        <div class="exam-card-footer">
-
-                            <button
-                                type="button"
-                                class="schedule-btn"
-                                data-exam="preliminary"
-                            >
-                                <span>
-                                    View Schedule
-                                </span>
-
-                                <span class="arrow">
-                                    →
-                                </span>
-                            </button>
 
                         </div>
 
@@ -268,6 +224,7 @@
                                 Midterm Examination
                             </h3>
 
+
                             <div class="exam-date">
 
                                 <span class="date-icon">
@@ -280,32 +237,10 @@
 
                             </div>
 
+
                             <p>
-                                The Midterm Examination will be
-                                conducted during the scheduled
-                                examination period. Students may
-                                view the detailed schedule by
-                                program and year level.
+                                Midterm examination period.
                             </p>
-
-                        </div>
-
-
-                        <div class="exam-card-footer">
-
-                            <button
-                                type="button"
-                                class="schedule-btn"
-                                data-exam="midterm"
-                            >
-                                <span>
-                                    View Schedule
-                                </span>
-
-                                <span class="arrow">
-                                    →
-                                </span>
-                            </button>
 
                         </div>
 
@@ -339,6 +274,7 @@
                                 Semifinal Examination
                             </h3>
 
+
                             <div class="exam-date">
 
                                 <span class="date-icon">
@@ -351,40 +287,15 @@
 
                             </div>
 
+
                             <p>
-                                The Semifinal Examination will be
-                                conducted during the scheduled
-                                examination period. Students may
-                                view the detailed schedule by
-                                program and year level.
+                                Semifinal examination period.
                             </p>
-
-                        </div>
-
-
-                        <div class="exam-card-footer">
-
-                            <button
-                                type="button"
-                                class="schedule-btn"
-                                data-exam="semifinal"
-                            >
-                                <span>
-                                    View Schedule
-                                </span>
-
-                                <span class="arrow">
-                                    →
-                                </span>
-                            </button>
 
                         </div>
 
                     </article>
 
-
-
-                    <!-- FINAL -->
                     <article
                         class="exam-card"
                         data-exam-card="final"
@@ -413,6 +324,7 @@
                                 Final Examination
                             </h3>
 
+
                             <div class="exam-date">
 
                                 <span class="date-icon">
@@ -425,32 +337,10 @@
 
                             </div>
 
+
                             <p>
-                                The Final Examination will be
-                                conducted during the scheduled
-                                examination period. Students may
-                                view the detailed schedule by
-                                program and year level.
+                                Final examination period.
                             </p>
-
-                        </div>
-
-
-                        <div class="exam-card-footer">
-
-                            <button
-                                type="button"
-                                class="schedule-btn"
-                                data-exam="final"
-                            >
-                                <span>
-                                    View Schedule
-                                </span>
-
-                                <span class="arrow">
-                                    →
-                                </span>
-                            </button>
 
                         </div>
 
@@ -499,44 +389,35 @@
 
         </section>
 
-        <section class="exam-cta-section">
+        <section class="cta-section">
 
-            <div class="section-container">
+            <div class="cta-container">
 
-                <div class="exam-cta">
+                <div class="cta-content">
 
-                    <div class="cta-content">
+                    <span class="eyebrow">
+                        ECOAST HUB
+                    </span>
 
-                        <span class="cta-label">
-                            STAY UPDATED
-                        </span>
+                    <h2>
+                        Stay Updated.
+                        <span>Be Prepared.</span>
+                    </h2>
 
-                        <h2>
-                            Check Your Examination Schedule
-                        </h2>
-
-                        <p>
-                            Select your examination period, program,
-                            and year level to view the available
-                            schedule information.
-                        </p>
-
-                    </div>
-
-
-                    <div class="cta-action">
-
-                        <a
-                            href="#examAnnouncements"
-                            class="cta-button"
-                        >
-                            View Examinations
-                            <span>→</span>
-                        </a>
-
-                    </div>
+                    <p>
+                        Check the examination dates and prepare
+                        ahead of every examination period.
+                    </p>
 
                 </div>
+
+                <a
+                    href="index.html"
+                    class="btn btn-light"
+                >
+                    Back to Home
+                    ↑
+                </a>
 
             </div>
 
@@ -544,322 +425,114 @@
 
     </main>
 
-    <div
-        class="schedule-modal"
-        id="scheduleModal"
-        hidden
-        aria-hidden="true"
-    >
-
-        <div
-            class="modal-overlay"
-            id="modalOverlay"
-        ></div>
-
-
-        <div
-            class="schedule-modal-dialog"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="modalTitle"
-        >
-
-            <div class="schedule-modal-header">
-
-                <div class="modal-heading">
-
-                    <span
-                        class="modal-type"
-                        id="modalType"
-                    >
-                        PRELIMINARY EXAMINATION
-                    </span>
-
-                    <h2 id="modalTitle">
-                        Preliminary Examination
-                    </h2>
-
-                    <div class="modal-date">
-
-                        <span>
-                            📅
-                        </span>
-
-                        <span id="modalDate">
-                            August 24–25, 2026
-                        </span>
-
-                    </div>
-
-                </div>
-
-
-                <button
-                    type="button"
-                    class="modal-close"
-                    id="modalClose"
-                    aria-label="Close schedule"
-                >
-                    ×
-                </button>
-
-            </div>
-
-            <div class="schedule-modal-content">
-
-                <div class="program-selector">
-
-                    <div class="selector-label">
-                        PROGRAM
-                    </div>
-
-
-                    <div
-                        class="program-tabs"
-                        id="programTabs"
-                    >
-
-                        <button
-                            type="button"
-                            class="program-tab active"
-                            data-program="CE"
-                        >
-                            CE
-                        </button>
-
-                        <button
-                            type="button"
-                            class="program-tab"
-                            data-program="EE"
-                        >
-                            EE
-                        </button>
-
-                        <button
-                            type="button"
-                            class="program-tab"
-                            data-program="CPE"
-                        >
-                            CPE
-                        </button>
-
-                        <button
-                            type="button"
-                            class="program-tab"
-                            data-program="IT"
-                        >
-                            IT
-                        </button>
-
-                        <button
-                            type="button"
-                            class="program-tab"
-                            data-program="CS"
-                        >
-                            CS
-                        </button>
-
-                    </div>
-
-                </div>
-
-                <div class="program-information">
-
-                    <div class="program-code">
-                        <span id="programCode">
-                            CE
-                        </span>
-                    </div>
-
-
-                    <div class="program-details">
-
-                        <span class="program-label">
-                            PROGRAM
-                        </span>
-
-                        <h3 id="programName">
-                            Civil Engineering
-                        </h3>
-
-                    </div>
-
-                </div>
-
-                <div class="year-selector">
-
-                    <div class="selector-label">
-                        YEAR LEVEL
-                    </div>
-
-
-                    <div
-                        class="year-tabs"
-                        id="yearTabs"
-                    >
-
-                        <button
-                            type="button"
-                            class="year-tab active"
-                            data-year="1"
-                        >
-                            Year 1
-                        </button>
-
-                        <button
-                            type="button"
-                            class="year-tab"
-                            data-year="2"
-                        >
-                            Year 2
-                        </button>
-
-                        <button
-                            type="button"
-                            class="year-tab"
-                            data-year="3"
-                        >
-                            Year 3
-                        </button>
-
-                        <button
-                            type="button"
-                            class="year-tab"
-                            data-year="4"
-                        >
-                            Year 4
-                        </button>
-
-                    </div>
-
-                </div>
-
-                <div class="schedule-container">
-
-                    <div class="schedule-header">
-
-                        <div>
-                            <span class="schedule-label">
-                                EXAMINATION SCHEDULE
-                            </span>
-
-                            <h3>
-                                Schedule Details
-                            </h3>
-                        </div>
-
-                    </div>
-
-
-                    <div
-                        class="modal-schedule"
-                        id="modalSchedule"
-                    >
-
-                        <div class="schedule-placeholder">
-
-                            <div class="schedule-placeholder-icon">
-                                📅
-                            </div>
-
-                            <h4>
-                                Schedule to Follow
-                            </h4>
-
-                            <p>
-                                Detailed subject schedule, room,
-                                and facilitator information will
-                                be announced.
-                            </p>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-            </div>
-
-            <div class="schedule-modal-footer">
-
-                <button
-                    type="button"
-                    class="modal-close-bottom"
-                    id="modalCloseBottom"
-                >
-                    Close
-                </button>
-
-            </div>
-
-        </div>
-
-    </div>
-
     <footer class="footer">
 
         <div class="footer-container">
 
             <div class="footer-brand">
 
-                <img
-                    src="ECOAST Logo.png"
-                    alt="ECOAST Logo"
-                >
+                <div class="brand">
 
-                <div>
+                    <div class="brand-logo">
 
-                    <strong>
-                        ECOAST HUB
-                    </strong>
+                        <img
+                            src="ECOAST Logo.png"
+                            alt="ECOAST Logo"
+                        >
 
-                    <p>
-                        Academic Information Hub
-                    </p>
+                    </div>
 
                 </div>
 
-            </div>
+                <p>
+                    ECOAST HUB is an interactive digital
+                    information platform designed to keep
+                    Engineering and IT students informed,
+                    connected, and updated.
+                </p>
 
+            </div>
 
             <div class="footer-links">
 
-                <a href="index.html">
-                    Home
-                </a>
+                <div class="footer-column">
 
-                <a href="announcements.html">
-                    Announcements
-                </a>
+                    <h4>
+                        Explore
+                    </h4>
 
-                <a href="curriculum.html">
-                    Curriculum
-                </a>
+                    <a href="index.html">
+                        Home
+                    </a>
 
-                <a href="faculty.html">
-                    Faculty
-                </a>
+                    <a href="announcements.html">
+                        Announcements
+                    </a>
 
-                <a href="contact.html">
-                    Contact
-                </a>
+                    <a href="faculties.html">
+                        Faculties
+                    </a>
 
-            </div>
+                    <a href="curriculum.html">
+                        Curriculum
+                    </a>
 
+                </div>
 
-            <div class="footer-bottom">
+                <div class="footer-column">
 
-                <p>
-                    © 2026 ECOAST HUB. All Rights Reserved.
-                </p>
+                    <h4>
+                        Community
+                    </h4>
+
+                    <a href="activities.html">
+                        Activities
+                    </a>
+
+                    <a href="officer.html">
+                        Officers
+                    </a>
+
+                </div>
+
+                <div class="footer-column">
+
+                    <h4>
+                        System
+                    </h4>
+
+                    <a href="#">
+                        Admin Login
+                    </a>
+
+                    <a href="#">
+                        Help
+                    </a>
+
+                    <a href="#">
+                        Contact
+                    </a>
+
+                </div>
+
 
             </div>
 
         </div>
 
-    </footer>
+        <div class="footer-bottom">
 
+            <p>
+                © ECOAST Ace Pugal '26. All rights reserved.
+            </p>
+
+            <span>
+                ECOAST HUB
+            </span>
+
+        </div>
+
+    </footer>
 
     <script src="api.js"></script>
     <script src="announcements.js"></script>
