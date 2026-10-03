@@ -43,11 +43,14 @@ if (menuToggle && navMenu) {
 }
 
 const officerCards =
-    document.querySelectorAll(".officer-card");
+    document.querySelectorAll(
+        ".officer-card"
+    );
 
 let backendOfficers = [];
 let backendOfficersByName = {};
 let backendOfficersById = {};
+
 
 function normalizeName(name) {
 
@@ -64,7 +67,6 @@ function normalizeOfficer(item) {
         return null;
     }
 
-
     return {
 
         id:
@@ -72,30 +74,23 @@ function normalizeOfficer(item) {
 
         name:
             item.name ||
-            "Officer Name",
+            "",
 
         position:
             item.position ||
-            "Student Officer",
-
-        program:
-            item.program ||
-            item.department ||
             "",
-
-        year:
-            item.year ||
-            item.year_level ||
-            "",
-
-        description:
-            item.description ||
-            item.bio ||
-            "",
-
+            
         image:
             item.image ||
-            ""
+            "",
+            
+        description:
+            item.description ||
+            "",
+
+        displayOrder:
+            item.display_order ??
+            null
 
     };
 
@@ -107,7 +102,6 @@ async function loadOfficers() {
         "Loading officers from:",
         OFFICERS_API
     );
-
 
     try {
 
@@ -136,7 +130,6 @@ async function loadOfficers() {
 
         }
 
-
         const result =
             await response.json();
 
@@ -162,6 +155,7 @@ async function loadOfficers() {
             Array.isArray(result.data)
                 ? result.data
                 : [];
+
 
         backendOfficers =
             records
@@ -204,6 +198,7 @@ async function loadOfficers() {
             }
         );
 
+
         console.log(
             "Backend officer records:",
             backendOfficers.length
@@ -215,10 +210,11 @@ async function loadOfficers() {
         ) {
 
             console.log(
-                "Officer table is currently empty. Existing HTML officer cards remain unchanged."
+                "Officer table is currently empty. Existing HTML officer cards remain active."
             );
 
         }
+
 
         return backendOfficers;
 
@@ -232,7 +228,8 @@ async function loadOfficers() {
         backendOfficers = [];
         backendOfficersByName = {};
         backendOfficersById = {};
-       
+
+
         return [];
 
     }
@@ -245,10 +242,14 @@ function findBackendOfficer(card) {
         return null;
     }
 
+
+    /*
+     * Try data-id first if it exists.
+     */
+
     const cardId =
         card.dataset.id ||
         card.dataset.officer;
-
 
     if (cardId) {
 
@@ -273,37 +274,31 @@ function findBackendOfficer(card) {
             ?.trim();
 
 
-    if (cardName) {
+    if (!cardName) {
 
-        const foundByName =
-            backendOfficersByName[
-                normalizeName(cardName)
-            ];
-
-
-        if (foundByName) {
-
-            return foundByName;
-
-        }
+        return null;
 
     }
 
 
-    return null;
+    return (
+        backendOfficersByName[
+            normalizeName(cardName)
+        ] ||
+        null
+    );
 
 }
 
 function applyBackendData() {
 
     if (
-        !backendOfficers.length
+        backendOfficers.length === 0
     ) {
 
         return;
 
     }
-
 
     officerCards.forEach(card => {
 
@@ -332,7 +327,9 @@ function applyBackendData() {
         }
 
         const positionElement =
-            card.querySelector(".officer-label");
+            card.querySelector(
+                ".officer-label"
+            );
 
 
         if (
@@ -344,12 +341,11 @@ function applyBackendData() {
                 backendOfficer.position;
 
         }
-
+        
         const imageElement =
             card.querySelector(
                 ".officer-image img"
             );
-
 
         if (
             imageElement &&
@@ -358,6 +354,10 @@ function applyBackendData() {
 
             imageElement.src =
                 backendOfficer.image;
+
+
+            imageElement.alt =
+                backendOfficer.name;
 
         }
 
