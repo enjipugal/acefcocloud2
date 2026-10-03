@@ -1,401 +1,680 @@
+const ANNOUNCEMENTS_API =
+    "https://ecoasthub.great-site.net/backend/announcements.php";
+
 document.addEventListener("DOMContentLoaded", () => {
 
-    const API_URL =
-        "https://ecoasthub.great-site.net/backend/announcements.php";
+    console.log("ECOAST HUB Announcements JS loaded");
 
-    const menuToggle = document.getElementById("menuToggle");
-    const navMenu = document.getElementById("navMenu");
+    initializeMobileNavigation();
+    initializeScheduleModal();
+    initializeRevealAnimations();
+    loadAnnouncementsData();
 
-    if (menuToggle && navMenu) {
+});
 
-        menuToggle.addEventListener("click", () => {
-            navMenu.classList.toggle("active");
+function initializeMobileNavigation() {
 
-            menuToggle.classList.toggle("active");
+    const menuToggle =
+        document.getElementById("menuToggle");
 
-        });
-        
+    const navMenu =
+        document.querySelector(".nav-menu");
+
+    if (!menuToggle || !navMenu) {
+        return;
     }
 
-    if (navMenu) {
 
-        const navLinks = navMenu.querySelectorAll("a");
+    menuToggle.addEventListener("click", () => {
 
-        navLinks.forEach(link => {
+        navMenu.classList.toggle("active");
 
-            link.addEventListener("click", () => {
+        menuToggle.classList.toggle("active");
 
-                navMenu.classList.remove("active");
+    });
 
-                if (menuToggle) {
-                    menuToggle.classList.remove("active");
-                }
+    const navLinks =
+        navMenu.querySelectorAll(".nav-link");
 
-            });
+    navLinks.forEach(link => {
 
-        });
+        link.addEventListener("click", () => {
 
-    }
+            navMenu.classList.remove("active");
 
-    async function loadAnnouncements() {
-
-        try {
-
-            const response = await fetch(API_URL, {
-                method: "GET",
-                headers: {
-                    "Accept": "application/json"
-                }
-            });
-
-            if (!response.ok) {
-                throw new Error(
-                    `HTTP error: ${response.status}`
-                );
-            }
-
-            const result = await response.json();
-
-            console.log("Announcements API:", result);
-
-
-            if (!result.success) {
-
-                console.error(
-                    "Announcements API error:",
-                    result.message || "Unknown error."
-                );
-
-                return;
-
-            }
-
-            if (
-                !Array.isArray(result.data) ||
-                result.data.length === 0
-            ) {
-
-                console.log(
-                    "Announcements database is empty. Existing HTML content preserved."
-                );
-
-                return;
-
-            }
-
-            updateAnnouncementCards(result.data);
-
-        } catch (error) {
-
-            console.error(
-                "Failed to load announcements:",
-                error
-            );
-
-        }
-
-    }
-
-    function updateAnnouncementCards(announcements) {
-
-        const cards = document.querySelectorAll(
-            ".announcement-card"
-        );
-
-        if (!cards.length) {
-
-            console.log(
-                "No announcement cards found in the HTML."
-            );
-
-            return;
-
-        }
-
-        announcements.forEach((announcement, index) => {
-
-            if (!cards[index]) {
-                return;
-            }
-
-            const card = cards[index];
-
-            const titleElement = card.querySelector(
-                "h3"
-            );
-
-            if (
-                titleElement &&
-                announcement.title
-            ) {
-
-                titleElement.textContent =
-                    announcement.title;
-
-            }
-
-            const descriptionElement =
-                card.querySelector(
-                    ".announcement-description"
-                );
-
-            if (
-                descriptionElement &&
-                announcement.description
-            ) {
-
-                descriptionElement.textContent =
-                    announcement.description;
-
-            }
-
-            const categoryElement =
-                card.querySelector(
-                    ".announcement-category"
-                );
-
-            if (
-                categoryElement &&
-                announcement.category
-            ) {
-
-                categoryElement.textContent =
-                    announcement.category;
-
-            }
-
-            const dateElement =
-                card.querySelector(
-                    ".announcement-date"
-                );
-
-            if (
-                dateElement &&
-                announcement.announcement_date
-            ) {
-
-                dateElement.textContent =
-                    formatAnnouncementDate(
-                        announcement.announcement_date
-                    );
-
-            }
-
-            const imageElement =
-                card.querySelector("img");
-
-            if (
-                imageElement &&
-                announcement.image
-            ) {
-
-                imageElement.src =
-                    announcement.image;
-
-            }
+            menuToggle.classList.remove("active");
 
         });
 
-    }
+    });
 
-    function formatAnnouncementDate(dateString) {
+}
 
-        if (!dateString) {
-            return "";
-        }
+function initializeScheduleModal() {
 
-        const date = new Date(dateString);
-
-        if (Number.isNaN(date.getTime())) {
-            return dateString;
-        }
-
-        return date.toLocaleDateString(
-            "en-US",
-            {
-                month: "long",
-                day: "numeric",
-                year: "numeric"
-            }
-        );
-
-    }
-
-    const scheduleModal =
+    const modal =
         document.getElementById("scheduleModal");
 
-    const closeScheduleModal =
-        document.getElementById("closeScheduleModal");
+    if (!modal) {
+        return;
+    }
 
-    const scheduleButtons =
+
+    const closeButtons =
+        modal.querySelectorAll(
+            ".modal-close, .close-modal, [data-close-modal]"
+        );
+
+    closeButtons.forEach(button => {
+
+        button.addEventListener("click", () => {
+
+            closeScheduleModal();
+
+        });
+
+    });
+
+    modal.addEventListener("click", event => {
+
+        if (event.target === modal) {
+
+            closeScheduleModal();
+
+        }
+
+    });
+
+    document.addEventListener("keydown", event => {
+
+        if (
+            event.key === "Escape" &&
+            modal.classList.contains("active")
+        ) {
+
+            closeScheduleModal();
+
+        }
+
+    });
+
+    const examButtons =
         document.querySelectorAll(
             "[data-exam]"
         );
 
-    if (scheduleButtons.length && scheduleModal) {
 
-        scheduleButtons.forEach(button => {
+    examButtons.forEach(button => {
 
-            button.addEventListener("click", () => {
+        button.addEventListener("click", () => {
 
-                const examType =
-                    button.dataset.exam;
+            const exam =
+                button.dataset.exam;
 
-                openScheduleModal(examType);
-
-            });
+            openScheduleModal(exam);
 
         });
 
+    });
+
+}
+
+function openScheduleModal(examType) {
+
+    const modal =
+        document.getElementById("scheduleModal");
+
+    if (!modal) {
+        return;
     }
 
-    function openScheduleModal(examType) {
 
-        if (!scheduleModal) {
-            return;
+    const normalizedExam =
+        normalizeText(examType);
+
+    const scheduleData = {
+
+        PRELIMINARY: {
+            title: "Preliminary Examination",
+            date: "August 24–25, 2026",
+            schedule: "8:00 AM – 5:00 PM"
+        },
+
+        MIDTERM: {
+            title: "Midterm Examination",
+            date: "September 16–17, 2026",
+            schedule: "8:00 AM – 5:00 PM"
+        },
+
+        SEMIFINAL: {
+            title: "Semifinal Examination",
+            date: "October 7–8, 2026",
+            schedule: "Schedule to be announced"
+        },
+
+        FINAL: {
+            title: "Final Examination",
+            date: "October 27–28, 2026",
+            schedule: "Schedule to be announced"
         }
 
-        scheduleModal.classList.add("active");
+    };
 
-        document.body.classList.add(
-            "modal-open"
-        );
+    const selectedSchedule =
+        scheduleData[normalizedExam];
 
-        console.log(
-            "Opened exam schedule:",
-            examType
-        );
 
+    if (!selectedSchedule) {
+        return;
     }
 
 
-    if (closeScheduleModal) {
-
-        closeScheduleModal.addEventListener(
-            "click",
-            closeSchedule
+    const titleElement =
+        modal.querySelector(
+            "#modalExamTitle, .modal-exam-title, .exam-title"
         );
+
+    const dateElement =
+        modal.querySelector(
+            "#modalExamDate, .modal-exam-date, .exam-date"
+        );
+
+
+    const scheduleElement =
+        modal.querySelector(
+            "#modalExamSchedule, .modal-exam-schedule, .exam-schedule"
+        );
+
+    if (titleElement) {
+
+        titleElement.textContent =
+            selectedSchedule.title;
 
     }
 
-    if (scheduleModal) {
+    if (dateElement) {
 
-        scheduleModal.addEventListener(
-            "click",
-            event => {
-
-                if (
-                    event.target ===
-                    scheduleModal
-                ) {
-
-                    closeSchedule();
-
-                }
-
-            }
-        );
+        dateElement.textContent =
+            selectedSchedule.date;
 
     }
 
-    function closeSchedule() {
+    if (scheduleElement) {
 
-        if (!scheduleModal) {
-            return;
-        }
-
-        scheduleModal.classList.remove(
-            "active"
-        );
-
-        document.body.classList.remove(
-            "modal-open"
-        );
+        scheduleElement.textContent =
+            selectedSchedule.schedule;
 
     }
 
-    document.addEventListener(
-        "keydown",
-        event => {
+    modal.classList.add("active");
 
-            if (
-                event.key === "Escape" &&
-                scheduleModal &&
-                scheduleModal.classList.contains(
-                    "active"
-                )
-            ) {
-
-                closeSchedule();
-
-            }
-
-        }
+    document.body.classList.add(
+        "modal-open"
     );
 
-    const revealElements =
-        document.querySelectorAll(
-            ".announcement-card, .exam-card, .section-title"
-        );
+}
 
+function closeScheduleModal() {
 
-    if (
-        "IntersectionObserver" in window &&
-        revealElements.length
-    ) {
+    const modal =
+        document.getElementById("scheduleModal");
 
-        const observer =
-            new IntersectionObserver(
-                entries => {
+    if (!modal) {
+        return;
+    }
 
-                    entries.forEach(entry => {
+    modal.classList.remove("active");
 
-                        if (
-                            entry.isIntersecting
-                        ) {
+    document.body.classList.remove(
+        "modal-open"
+    );
 
-                            entry.target.classList.add(
-                                "visible"
-                            );
+}
 
-                            observer.unobserve(
-                                entry.target
-                            );
+async function loadAnnouncementsData() {
 
-                        }
+    try {
 
-                    });
-
-                },
+        const response =
+            await fetch(
+                ANNOUNCEMENTS_API,
                 {
-                    threshold: 0.12
+                    method: "GET",
+                    headers: {
+                        "Accept": "application/json"
+                    }
                 }
             );
 
 
-        revealElements.forEach(element => {
+        if (!response.ok) {
 
-            observer.observe(element);
+            throw new Error(
+                `HTTP ${response.status}`
+            );
 
-        });
+        }
+
+        const result =
+            await response.json();
+
+
+        console.log(
+            "Announcements backend response:",
+            result
+        );
+
+        if (
+            !result ||
+            result.success !== true ||
+            !Array.isArray(result.data)
+        ) {
+
+            console.warn(
+                "Announcements backend returned no usable data."
+            );
+
+            return;
+
+        }
+
+        if (result.data.length === 0) {
+
+            console.log(
+                "Announcements backend is connected but currently empty. Existing HTML announcements will remain visible."
+            );
+
+            return;
+
+        }
+
+        applyAnnouncementsData(
+            result.data
+        );
+
+    } catch (error) {
+
+        console.warn(
+            "Announcements API could not be loaded. Existing HTML announcements will remain visible.",
+            error
+        );
 
     }
 
-    document.querySelectorAll(
-        'a[href="#"]'
-    ).forEach(link => {
+}
 
-        link.addEventListener(
-            "click",
-            event => {
+function applyAnnouncementsData(data) {
 
-                event.preventDefault();
+    if (
+        !Array.isArray(data) ||
+        !data.length
+    ) {
 
-            }
+        return;
+
+    }
+
+    const announcementCards =
+        document.querySelectorAll(
+            ".announcement-card, .announcement-item, .announcement"
+        );
+
+
+    if (!announcementCards.length) {
+
+        console.warn(
+            "No announcement card elements were found in announcements.html."
+        );
+
+        return;
+
+    }
+
+    data.forEach(item => {
+
+        if (!item) {
+            return;
+        }
+
+
+        const backendId =
+            normalizeText(item.id);
+
+        const backendTitle =
+            normalizeText(item.title);
+
+
+        let matchedCard = null;
+
+        if (backendId) {
+
+            announcementCards.forEach(card => {
+
+                if (matchedCard) {
+                    return;
+                }
+
+                const cardId =
+                    normalizeText(
+                        card.dataset.id
+                    );
+
+
+                if (
+                    cardId &&
+                    cardId === backendId
+                ) {
+
+                    matchedCard = card;
+
+                }
+
+            });
+
+        }
+
+        if (
+            !matchedCard &&
+            backendTitle
+        ) {
+
+            announcementCards.forEach(card => {
+
+                if (matchedCard) {
+                    return;
+                }
+
+
+                const titleElement =
+                    card.querySelector(
+                        "h2, h3, h4, .announcement-title"
+                    );
+
+                if (!titleElement) {
+                    return;
+                }
+
+                const cardTitle =
+                    normalizeText(
+                        titleElement.textContent
+                    );
+
+
+                if (
+                    cardTitle &&
+                    cardTitle === backendTitle
+                ) {
+
+                    matchedCard = card;
+
+                }
+
+            });
+
+        }
+
+
+        if (!matchedCard) {
+            return;
+        }
+
+
+        updateAnnouncementCard(
+            matchedCard,
+            item
         );
 
     });
 
-    loadAnnouncements();
 
-});
+    console.log(
+        `Applied ${data.length} announcement record(s) from backend.`
+    );
+
+}
+
+function updateAnnouncementCard(
+    card,
+    item
+) {
+
+    const titleElement =
+        card.querySelector(
+            "h2, h3, h4, .announcement-title"
+        );
+
+
+    if (
+        titleElement &&
+        item.title
+    ) {
+
+        titleElement.textContent =
+            item.title;
+
+    }
+
+    const descriptionElement =
+        card.querySelector(
+            ".announcement-description, p"
+        );
+
+
+    if (
+        descriptionElement &&
+        item.description
+    ) {
+
+        descriptionElement.textContent =
+            item.description;
+
+    }
+
+    const categoryElement =
+        card.querySelector(
+            ".announcement-category, .category"
+        );
+
+
+    if (
+        categoryElement &&
+        item.category
+    ) {
+
+        categoryElement.textContent =
+            item.category;
+
+    }
+
+    const dateElement =
+        card.querySelector(
+            ".announcement-date, time, .date"
+        );
+
+
+    if (
+        dateElement &&
+        item.announcement_date
+    ) {
+
+        dateElement.textContent =
+            formatAnnouncementDate(
+                item.announcement_date
+            );
+
+    }
+
+    const imageElement =
+        card.querySelector("img");
+
+
+    if (
+        imageElement &&
+        item.image
+    ) {
+
+        imageElement.src =
+            item.image;
+
+        imageElement.alt =
+            item.title ||
+            "ECOAST Announcement";
+
+    }
+
+}
+
+function formatAnnouncementDate(
+    dateValue
+) {
+
+    if (!dateValue) {
+        return "";
+    }
+
+
+    const date =
+        new Date(dateValue);
+
+
+    if (
+        Number.isNaN(
+            date.getTime()
+        )
+    ) {
+
+        return dateValue;
+
+    }
+
+    return date.toLocaleDateString(
+        "en-US",
+        {
+            month: "long",
+            day: "numeric",
+            year: "numeric"
+        }
+    );
+
+}
+
+function normalizeText(value) {
+
+    if (
+        value === null ||
+        value === undefined
+    ) {
+
+        return "";
+
+    }
+
+
+    return String(value)
+        .trim()
+        .replace(/\s+/g, " ")
+        .toUpperCase();
+
+}
+
+function initializeRevealAnimations() {
+
+    const elements =
+        document.querySelectorAll(
+            ".section-heading, .announcement-card, .announcement-item, .announcement, .exam-card, .cta-section"
+        );
+
+
+    if (!elements.length) {
+        return;
+    }
+
+
+    if (
+        !(
+            "IntersectionObserver"
+            in window
+        )
+    ) {
+
+        elements.forEach(element => {
+
+            element.classList.add(
+                "visible"
+            );
+
+        });
+
+        return;
+
+    }
+
+    const observer =
+        new IntersectionObserver(
+            entries => {
+
+                entries.forEach(entry => {
+
+                    if (
+                        entry.isIntersecting
+                    ) {
+
+                        entry.target.classList.add(
+                            "visible"
+                        );
+
+
+                        observer.unobserve(
+                            entry.target
+                        );
+
+                    }
+
+                });
+
+            },
+            {
+                threshold: 0.12
+            }
+        );
+
+
+    elements.forEach(element => {
+
+        observer.observe(element);
+
+    });
+
+}
+
+document.addEventListener(
+    "click",
+    event => {
+
+        const link =
+            event.target.closest(
+                "a[href='#']"
+            );
+
+
+        if (!link) {
+            return;
+        }
+
+
+        event.preventDefault();
+
+    }
+);
+
+window.addEventListener(
+    "error",
+    event => {
+
+        console.warn(
+            "ECOAST Announcements page error:",
+            event.message
+        );
+
+    }
+);
