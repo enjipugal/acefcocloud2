@@ -43,12 +43,13 @@ if (menuToggle && navMenu) {
 }
 
 const facultyCards =
-    document.querySelectorAll(".faculty-card");
+    document.querySelectorAll(
+        ".faculty-card"
+    );
 
 let backendFaculties = [];
 let backendFacultiesByName = {};
 let backendFacultiesById = {};
-
 
 function normalizeName(name) {
 
@@ -73,37 +74,31 @@ function normalizeFaculty(item) {
 
         name:
             item.name ||
-            "Faculty Member",
+            "",
 
         position:
             item.position ||
-            "Faculty Member",
+            "",
 
-        program:
-            item.program ||
+        department:
             item.department ||
             "",
-            
+
         specialization:
             item.specialization ||
             "",
 
-        email:
-            item.email ||
-            "",
-
-        education:
-            item.education ||
+        image:
+            item.image ||
             "",
 
         description:
             item.description ||
-            item.bio ||
             "",
 
-        image:
-            item.image ||
-            ""
+        displayOrder:
+            item.display_order ??
+            null
 
     };
 
@@ -134,6 +129,7 @@ async function loadFaculties() {
                 }
             );
 
+
         if (!response.ok) {
 
             throw new Error(
@@ -142,6 +138,7 @@ async function loadFaculties() {
             );
 
         }
+
 
         const result =
             await response.json();
@@ -165,11 +162,11 @@ async function loadFaculties() {
 
         }
 
-
         const records =
             Array.isArray(result.data)
                 ? result.data
                 : [];
+
 
         backendFaculties =
             records
@@ -179,6 +176,7 @@ async function loadFaculties() {
 
         backendFacultiesByName = {};
         backendFacultiesById = {};
+
 
         backendFaculties.forEach(
             faculty => {
@@ -196,7 +194,6 @@ async function loadFaculties() {
                     ] = faculty;
 
                 }
-
 
                 if (
                     faculty.id !== null &&
@@ -223,7 +220,7 @@ async function loadFaculties() {
         ) {
 
             console.log(
-                "Faculty table is currently empty. Existing HTML faculty cards remain unchanged."
+                "Faculty table is currently empty. Existing HTML faculty cards remain active."
             );
 
         }
@@ -240,7 +237,7 @@ async function loadFaculties() {
         backendFaculties = [];
         backendFacultiesByName = {};
         backendFacultiesById = {};
-        
+
         return [];
 
     }
@@ -256,7 +253,6 @@ function findBackendFaculty(card) {
     const cardId =
         card.dataset.id ||
         card.dataset.faculty;
-
 
     if (cardId) {
 
@@ -280,37 +276,25 @@ function findBackendFaculty(card) {
             ?.textContent
             ?.trim();
 
+    if (!cardName) {
 
-    if (cardName) {
-
-        const foundByName =
-            backendFacultiesByName[
-                normalizeName(cardName)
-            ];
-
-
-        if (foundByName) {
-
-            return foundByName;
-
-        }
+        return null;
 
     }
 
-
-    return null;
+    return (
+        backendFacultiesByName[
+            normalizeName(cardName)
+        ] ||
+        null
+    );
 
 }
 
 function applyBackendData() {
 
-    /*
-     * If the database is empty,
-     * keep all existing HTML cards.
-     */
-
     if (
-        !backendFaculties.length
+        backendFaculties.length === 0
     ) {
 
         return;
@@ -331,7 +315,6 @@ function applyBackendData() {
 
         const nameElement =
             card.querySelector("h3");
-
 
         if (
             nameElement &&
@@ -367,11 +350,11 @@ function applyBackendData() {
 
         if (
             programBadge &&
-            backendFaculty.program
+            backendFaculty.department
         ) {
 
             programBadge.textContent =
-                backendFaculty.program;
+                backendFaculty.department;
 
         }
 
@@ -383,14 +366,14 @@ function applyBackendData() {
 
         if (
             facultyLabel &&
-            backendFaculty.program
+            backendFaculty.department
         ) {
 
             facultyLabel.textContent =
-                backendFaculty.program;
+                backendFaculty.department;
 
         }
-
+        
         const imageElement =
             card.querySelector(
                 ".faculty-card-image img"
@@ -404,7 +387,6 @@ function applyBackendData() {
 
             imageElement.src =
                 backendFaculty.image;
-
 
             imageElement.alt =
                 backendFaculty.name;
@@ -432,6 +414,7 @@ if (
                         entry.target.classList.add(
                             "visible"
                         );
+
 
                         observer.unobserve(
                             entry.target
