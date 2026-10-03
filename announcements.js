@@ -32,216 +32,326 @@ const EXAM_SCHEDULES = {
 const PROGRAMS = {
 
     CE: {
-        name: "Civil Engineering",
-        years: [1, 2, 3, 4]
+        name: "Civil Engineering"
     },
 
     EE: {
-        name: "Electrical Engineering",
-        years: [1, 2, 3, 4]
+        name: "Electrical Engineering"
     },
 
     CPE: {
-        name: "Computer Engineering",
-        years: [1, 2, 3, 4]
+        name: "Computer Engineering"
     },
 
     IT: {
-        name: "Information Technology",
-        years: [1, 2, 3, 4]
+        name: "Information Technology"
     },
 
     CS: {
-        name: "Computer Science",
-        years: [1, 2, 3, 4]
+        name: "Computer Science"
     }
 
 };
 
-let currentExamType = "preliminary";
-let currentProgram = "CE";
-let currentYear = 1;
+let currentExam =
+    "preliminary";
 
-document.addEventListener("DOMContentLoaded", () => {
+let currentProgram =
+    "CE";
 
-    console.log("ECOAST HUB Announcements JS loaded");
+let currentYear =
+    1;
 
-    initializeMobileNavigation();
-    initializeScheduleModal();
-    initializeRevealAnimations();
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
 
-    loadAnnouncementsData();
+        console.log(
+            "ECOAST HUB Announcements JS loaded successfully."
+        );
 
-});
+        initializeMobileNavigation();
+        initializeScheduleSystem();
+        initializeRevealAnimations();
+
+        loadAnnouncementsData();
+
+    }
+);
 
 function initializeMobileNavigation() {
 
     const menuToggle =
-        document.getElementById("menuToggle");
+        document.getElementById(
+            "menuToggle"
+        );
 
     const navMenu =
-        document.querySelector(".nav-menu");
+        document.querySelector(
+            ".nav-menu"
+        );
 
-    if (!menuToggle || !navMenu) {
+    if (
+        !menuToggle ||
+        !navMenu
+    ) {
+
         return;
+
     }
 
-    menuToggle.addEventListener("click", () => {
+    menuToggle.addEventListener(
+        "click",
+        () => {
 
-        navMenu.classList.toggle("active");
+            navMenu.classList.toggle(
+                "active"
+            );
 
-        menuToggle.classList.toggle("active");
+            menuToggle.classList.toggle(
+                "active"
+            );
 
-    });
+        }
+    );
 
-    const navLinks =
-        navMenu.querySelectorAll(".nav-link");
+    navMenu
+        .querySelectorAll(
+            ".nav-link"
+        )
+        .forEach(
+            link => {
 
+                link.addEventListener(
+                    "click",
+                    () => {
 
-    navLinks.forEach(link => {
+                        navMenu.classList.remove(
+                            "active"
+                        );
 
-        link.addEventListener("click", () => {
+                        menuToggle.classList.remove(
+                            "active"
+                        );
 
-            navMenu.classList.remove("active");
+                    }
+                );
 
-            menuToggle.classList.remove("active");
-
-        });
-
-    });
+            }
+        );
 
 }
 
-function initializeScheduleModal() {
+function initializeScheduleSystem() {
 
-    const modal =
-        document.getElementById("scheduleModal");
+    document.addEventListener(
+        "click",
+        event => {
 
-    if (!modal) {
-
-        console.warn(
-            "Schedule modal was not found."
-        );
-
-        return;
-
-    }
-
-    const examButtons =
-        document.querySelectorAll(
-            ".schedule-btn[data-exam]"
-        );
+            const scheduleButton =
+                event.target.closest(
+                    ".schedule-btn[data-exam]"
+                );
 
 
-    examButtons.forEach(button => {
+            if (scheduleButton) {
 
-        button.addEventListener("click", event => {
+                event.preventDefault();
+                event.stopPropagation();
 
-            event.preventDefault();
+                const exam =
+                    scheduleButton.getAttribute(
+                        "data-exam"
+                    );
 
-            const examType =
-                button.getAttribute("data-exam");
 
-            openScheduleModal(examType);
+                console.log(
+                    "Schedule button clicked:",
+                    exam
+                );
 
-        });
 
-    });
+                openScheduleModal(
+                    exam
+                );
 
-    const closeButton =
-        document.getElementById("modalClose");
+                return;
 
-    if (closeButton) {
+            }
 
-        closeButton.addEventListener(
-            "click",
-            closeScheduleModal
-        );
+            const closeButton =
+                event.target.closest(
+                    "#modalClose"
+                );
 
-    }
 
-    const closeBottom =
-        document.getElementById("modalCloseBottom");
+            if (closeButton) {
 
-    if (closeBottom) {
+                event.preventDefault();
 
-        closeBottom.addEventListener(
-            "click",
-            closeScheduleModal
-        );
+                closeScheduleModal();
 
-    }
+                return;
 
-    const overlay =
-        document.getElementById("modalOverlay");
+            }
 
-    if (overlay) {
+            const bottomCloseButton =
+                event.target.closest(
+                    "#modalCloseBottom"
+                );
 
-        overlay.addEventListener(
-            "click",
-            closeScheduleModal
-        );
 
-    }
+            if (bottomCloseButton) {
 
-    const programTabs =
-        modal.querySelectorAll(
-            ".program-tab[data-program]"
-        );
+                event.preventDefault();
 
-    programTabs.forEach(tab => {
+                closeScheduleModal();
 
-        tab.addEventListener("click", () => {
+                return;
 
-            const program =
-                tab.getAttribute("data-program");
+            }
 
-            selectProgram(program);
+            const overlay =
+                event.target.closest(
+                    "#modalOverlay"
+                );
 
-        });
 
-    });
+            if (overlay) {
 
+                closeScheduleModal();
+
+                return;
+
+            }
+            
+            const programButton =
+                event.target.closest(
+                    ".program-tab[data-program]"
+                );
+
+
+            if (programButton) {
+
+                const program =
+                    programButton.getAttribute(
+                        "data-program"
+                    );
+
+
+                selectProgram(
+                    program
+                );
+
+                return;
+
+            }
+
+            const yearButton =
+                event.target.closest(
+                    "#yearTabs .year-tab"
+                );
+
+            if (yearButton) {
+
+                const year =
+                    Number(
+                        yearButton.dataset.year
+                    );
+
+                if (
+                    Number.isInteger(year)
+                ) {
+
+                    currentYear =
+                        year;
+
+                    updateYearTabs();
+                    updateScheduleContent();
+
+                }
+
+                return;
+
+            }
+
+        }
+    );
+    
     document.addEventListener(
         "keydown",
         event => {
 
             if (
-                event.key === "Escape" &&
-                modal.classList.contains("active")
+                event.key === "Escape"
             ) {
 
-                closeScheduleModal();
+                const modal =
+                    document.getElementById(
+                        "scheduleModal"
+                    );
+
+
+                if (
+                    modal &&
+                    modal.classList.contains(
+                        "active"
+                    )
+                ) {
+
+                    closeScheduleModal();
+
+                }
 
             }
 
         }
     );
 
+
+    console.log(
+        "Schedule system initialized."
+    );
+
 }
 
-function openScheduleModal(examType) {
+function openScheduleModal(
+    examType
+) {
 
     const modal =
-        document.getElementById("scheduleModal");
+        document.getElementById(
+            "scheduleModal"
+        );
+
 
     if (!modal) {
+
+        console.error(
+            "ERROR: #scheduleModal was not found."
+        );
+
         return;
+
     }
 
     const normalizedExam =
-        String(examType || "")
-            .trim()
-            .toLowerCase();
+        String(
+            examType || ""
+        )
+        .trim()
+        .toLowerCase();
+
+    const exam =
+        EXAM_SCHEDULES[
+            normalizedExam
+        ];
 
 
-    const schedule =
-        EXAM_SCHEDULES[normalizedExam];
+    if (!exam) {
 
-    if (!schedule) {
-
-        console.warn(
-            "Unknown examination type:",
+        console.error(
+            "ERROR: Unknown exam type:",
             examType
         );
 
@@ -249,9 +359,14 @@ function openScheduleModal(examType) {
 
     }
 
+    console.log(
+        "Opening schedule modal:",
+        exam
+    );
 
-    currentExamType =
+    currentExam =
         normalizedExam;
+
 
     currentProgram =
         "CE";
@@ -260,33 +375,37 @@ function openScheduleModal(examType) {
         1;
 
     const modalType =
-        document.getElementById("modalType");
+        document.getElementById(
+            "modalType"
+        );
 
     const modalTitle =
-        document.getElementById("modalTitle");
+        document.getElementById(
+            "modalTitle"
+        );
+
 
     const modalDate =
-        document.getElementById("modalDate");
+        document.getElementById(
+            "modalDate"
+        );
 
 
     if (modalType) {
-
         modalType.textContent =
-            schedule.type;
+            exam.type;
 
     }
 
     if (modalTitle) {
-
         modalTitle.textContent =
-            schedule.title;
+            exam.title;
 
     }
 
     if (modalDate) {
-
         modalDate.textContent =
-            schedule.date;
+            exam.date;
 
     }
 
@@ -295,14 +414,48 @@ function openScheduleModal(examType) {
     updateYearTabs();
     updateScheduleContent();
 
-    modal.classList.add("active");
+    modal.classList.add(
+        "active"
+    );
+
     modal.setAttribute(
         "aria-hidden",
         "false"
     );
 
+    modal.style.display =
+        "flex";
+
+    modal.style.visibility =
+        "visible";
+
+    modal.style.opacity =
+        "1";
+
+    modal.style.position =
+        "fixed";
+
+    modal.style.inset =
+        "0";
+
+    modal.style.zIndex =
+        "99999";
+
+    modal.style.alignItems =
+        "center";
+
+    modal.style.justifyContent =
+        "center";
+
     document.body.classList.add(
         "modal-open"
+    );
+
+    document.body.style.overflow =
+        "hidden";
+
+    console.log(
+        "Schedule modal opened."
     );
 
 }
@@ -310,30 +463,56 @@ function openScheduleModal(examType) {
 function closeScheduleModal() {
 
     const modal =
-        document.getElementById("scheduleModal");
+        document.getElementById(
+            "scheduleModal"
+        );
+
 
     if (!modal) {
         return;
     }
 
+    modal.classList.remove(
+        "active"
+    );
 
-    modal.classList.remove("active");
     modal.setAttribute(
         "aria-hidden",
         "true"
     );
 
+    modal.style.display =
+        "none";
+
+    modal.style.visibility =
+        "hidden";
+
+    modal.style.opacity =
+        "0";
 
     document.body.classList.remove(
         "modal-open"
     );
 
+    document.body.style.overflow =
+        "";
+
+    console.log(
+        "Schedule modal closed."
+    );
+
 }
 
-function selectProgram(program) {
+function selectProgram(
+    program
+) {
 
-    if (!PROGRAMS[program]) {
+    if (
+        !PROGRAMS[program]
+    ) {
+
         return;
+
     }
 
 
@@ -343,7 +522,6 @@ function selectProgram(program) {
 
     currentYear =
         1;
-
 
     updateProgramTabs();
     updateProgramInformation();
@@ -360,25 +538,43 @@ function updateProgramTabs() {
         );
 
 
-    tabs.forEach(tab => {
+    tabs.forEach(
+        tab => {
 
-        const program =
-            tab.getAttribute("data-program");
+            const program =
+                tab.getAttribute(
+                    "data-program"
+                );
 
 
-        tab.classList.toggle(
-            "active",
-            program === currentProgram
-        );
+            if (
+                program ===
+                currentProgram
+            ) {
 
-    });
+                tab.classList.add(
+                    "active"
+                );
+
+            } else {
+
+                tab.classList.remove(
+                    "active"
+                );
+
+            }
+
+        }
+    );
 
 }
 
 function updateProgramInformation() {
 
     const program =
-        PROGRAMS[currentProgram];
+        PROGRAMS[
+            currentProgram
+        ];
 
 
     if (!program) {
@@ -405,6 +601,7 @@ function updateProgramInformation() {
 
     }
 
+
     if (programName) {
 
         programName.textContent =
@@ -423,22 +620,20 @@ function updateYearTabs() {
 
 
     if (!yearTabs) {
+
         return;
-    }
 
-    const program =
-        PROGRAMS[currentProgram];
-
-
-    if (!program) {
-        return;
     }
 
 
     yearTabs.innerHTML = "";
 
 
-    program.years.forEach(year => {
+    for (
+        let year = 1;
+        year <= 4;
+        year++
+    ) {
 
         const button =
             document.createElement(
@@ -454,7 +649,13 @@ function updateYearTabs() {
             "year-tab";
 
 
-        if (year === currentYear) {
+        button.dataset.year =
+            String(year);
+
+
+        if (
+            year === currentYear
+        ) {
 
             button.classList.add(
                 "active"
@@ -467,56 +668,52 @@ function updateYearTabs() {
             `${year}${getOrdinalSuffix(year)} Year`;
 
 
-        button.addEventListener(
-            "click",
-            () => {
-
-                currentYear =
-                    year;
-
-                updateYearTabs();
-
-                updateScheduleContent();
-
-            }
-        );
-
-
         yearTabs.appendChild(
             button
         );
 
-    });
+    }
 
 }
 
 function updateScheduleContent() {
 
-    const scheduleContainer =
+    const schedule =
         document.getElementById(
             "modalSchedule"
         );
 
 
-    if (!scheduleContainer) {
+    if (!schedule) {
+
         return;
+
     }
 
 
     const exam =
-        EXAM_SCHEDULES[currentExamType];
+        EXAM_SCHEDULES[
+            currentExam
+        ];
 
 
     const program =
-        PROGRAMS[currentProgram];
+        PROGRAMS[
+            currentProgram
+        ];
 
 
-    if (!exam || !program) {
+    if (
+        !exam ||
+        !program
+    ) {
+
         return;
+
     }
 
 
-    scheduleContainer.innerHTML = `
+    schedule.innerHTML = `
 
         <div class="schedule-empty">
 
@@ -532,7 +729,9 @@ function updateScheduleContent() {
 
                 <h4>
                     ${program.name}
-                    — ${currentYear}${getOrdinalSuffix(currentYear)} Year
+                    —
+                    ${currentYear}${getOrdinalSuffix(currentYear)}
+                    Year
                 </h4>
 
                 <p>
@@ -540,7 +739,9 @@ function updateScheduleContent() {
                 </p>
 
                 <strong>
-                    Detailed schedule to be announced.
+                    Detailed subject schedule,
+                    room, and facilitator information
+                    will be announced.
                 </strong>
 
             </div>
@@ -551,7 +752,9 @@ function updateScheduleContent() {
 
 }
 
-function getOrdinalSuffix(number) {
+function getOrdinalSuffix(
+    number
+) {
 
     if (
         number >= 11 &&
@@ -563,7 +766,9 @@ function getOrdinalSuffix(number) {
     }
 
 
-    switch (number % 10) {
+    switch (
+        number % 10
+    ) {
 
         case 1:
             return "st";
@@ -594,18 +799,24 @@ async function loadAnnouncementsData() {
                     headers: {
                         "Accept":
                             "application/json"
-                    }
+                    },
+
+                    cache:
+                        "no-store"
                 }
             );
 
 
-        if (!response.ok) {
+        if (
+            !response.ok
+        ) {
 
             throw new Error(
                 `HTTP ${response.status}`
             );
 
         }
+
 
         const result =
             await response.json();
@@ -620,7 +831,9 @@ async function loadAnnouncementsData() {
         if (
             !result ||
             result.success !== true ||
-            !Array.isArray(result.data)
+            !Array.isArray(
+                result.data
+            )
         ) {
 
             console.warn(
@@ -637,7 +850,7 @@ async function loadAnnouncementsData() {
         ) {
 
             console.log(
-                "Announcements backend is connected but currently empty. Existing HTML announcements will remain visible."
+                "Announcements backend is connected but empty."
             );
 
             return;
@@ -660,7 +873,9 @@ async function loadAnnouncementsData() {
 
 }
 
-function applyAnnouncementsData(data) {
+function applyAnnouncementsData(
+    data
+) {
 
     if (
         !Array.isArray(data) ||
@@ -672,128 +887,142 @@ function applyAnnouncementsData(data) {
     }
 
 
-    const announcementCards =
+    const cards =
         document.querySelectorAll(
             ".announcement-card, .announcement-item, .announcement"
         );
 
 
-    if (!announcementCards.length) {
+    if (!cards.length) {
 
         console.warn(
-            "No announcement card elements were found in announcements.html."
+            "No announcement cards found."
         );
 
         return;
 
     }
 
+    data.forEach(
+        item => {
 
-    data.forEach(item => {
+            if (!item) {
+                return;
+            }
 
-        if (!item) {
-            return;
+
+            const backendId =
+                normalizeText(
+                    item.id
+                );
+
+
+            const backendTitle =
+                normalizeText(
+                    item.title
+                );
+
+
+            let matchedCard =
+                null;
+
+            if (backendId) {
+
+                cards.forEach(
+                    card => {
+
+                        if (
+                            matchedCard
+                        ) {
+                            return;
+                        }
+
+
+                        const cardId =
+                            normalizeText(
+                                card.dataset.id
+                            );
+
+
+                        if (
+                            cardId &&
+                            cardId ===
+                            backendId
+                        ) {
+
+                            matchedCard =
+                                card;
+
+                        }
+
+                    }
+                );
+
+            }
+
+            if (
+                !matchedCard &&
+                backendTitle
+            ) {
+
+                cards.forEach(
+                    card => {
+
+                        if (
+                            matchedCard
+                        ) {
+                            return;
+                        }
+
+
+                        const titleElement =
+                            card.querySelector(
+                                "h2, h3, h4, .announcement-title"
+                            );
+
+
+                        if (
+                            !titleElement
+                        ) {
+                            return;
+                        }
+
+
+                        const cardTitle =
+                            normalizeText(
+                                titleElement.textContent
+                            );
+
+
+                        if (
+                            cardTitle &&
+                            cardTitle ===
+                            backendTitle
+                        ) {
+
+                            matchedCard =
+                                card;
+
+                        }
+
+                    }
+                );
+
+            }
+
+
+            if (
+                matchedCard
+            ) {
+
+                updateAnnouncementCard(
+                    matchedCard,
+                    item
+                );
+
+            }
+
         }
-
-
-        const backendId =
-            normalizeText(item.id);
-
-
-        const backendTitle =
-            normalizeText(item.title);
-
-
-        let matchedCard =
-            null;
-
-        if (backendId) {
-
-            announcementCards.forEach(card => {
-
-                if (matchedCard) {
-                    return;
-                }
-
-
-                const cardId =
-                    normalizeText(
-                        card.dataset.id
-                    );
-
-
-                if (
-                    cardId &&
-                    cardId === backendId
-                ) {
-
-                    matchedCard =
-                        card;
-
-                }
-
-            });
-
-        }
-
-        if (
-            !matchedCard &&
-            backendTitle
-        ) {
-
-            announcementCards.forEach(card => {
-
-                if (matchedCard) {
-                    return;
-                }
-
-
-                const titleElement =
-                    card.querySelector(
-                        "h2, h3, h4, .announcement-title"
-                    );
-
-
-                if (!titleElement) {
-                    return;
-                }
-
-
-                const cardTitle =
-                    normalizeText(
-                        titleElement.textContent
-                    );
-
-
-                if (
-                    cardTitle &&
-                    cardTitle === backendTitle
-                ) {
-
-                    matchedCard =
-                        card;
-
-                }
-
-            });
-
-        }
-
-        if (!matchedCard) {
-            return;
-        }
-
-
-        updateAnnouncementCard(
-            matchedCard,
-            item
-        );
-
-    });
-
-
-    console.log(
-        `Applied ${data.length} announcement record(s) from backend.`
     );
 
 }
@@ -803,68 +1032,69 @@ function updateAnnouncementCard(
     item
 ) {
 
-    const titleElement =
+    const title =
         card.querySelector(
             "h2, h3, h4, .announcement-title"
         );
 
 
     if (
-        titleElement &&
+        title &&
         item.title
     ) {
 
-        titleElement.textContent =
+        title.textContent =
             item.title;
 
     }
 
 
-    const descriptionElement =
+    const description =
         card.querySelector(
             ".announcement-description, p"
         );
 
 
     if (
-        descriptionElement &&
+        description &&
         item.description
     ) {
 
-        descriptionElement.textContent =
+        description.textContent =
             item.description;
 
     }
 
 
-    const categoryElement =
+    const category =
         card.querySelector(
             ".announcement-category, .category"
         );
 
 
     if (
-        categoryElement &&
+        category &&
         item.category
     ) {
 
-        categoryElement.textContent =
+        category.textContent =
             item.category;
 
     }
 
-    const dateElement =
+
+    const date =
         card.querySelector(
             ".announcement-date, time, .date"
         );
 
 
     if (
-        dateElement &&
+        date &&
         item.announcement_date
     ) {
 
-        dateElement.textContent =
+        date.textContent =
             formatAnnouncementDate(
                 item.announcement_date
             );
@@ -872,22 +1102,22 @@ function updateAnnouncementCard(
     }
 
 
-    const imageElement =
+    const image =
         card.querySelector(
             "img"
         );
 
 
     if (
-        imageElement &&
+        image &&
         item.image
     ) {
 
-        imageElement.src =
+        image.src =
             item.image;
 
 
-        imageElement.alt =
+        image.alt =
             item.title ||
             "ECOAST Announcement";
 
@@ -900,7 +1130,9 @@ function formatAnnouncementDate(
 ) {
 
     if (!dateValue) {
+
         return "";
+
     }
 
 
@@ -924,15 +1156,22 @@ function formatAnnouncementDate(
     return date.toLocaleDateString(
         "en-US",
         {
-            month: "long",
-            day: "numeric",
-            year: "numeric"
+            month:
+                "long",
+
+            day:
+                "numeric",
+
+            year:
+                "numeric"
         }
     );
 
 }
 
-function normalizeText(value) {
+function normalizeText(
+    value
+) {
 
     if (
         value === null ||
@@ -943,10 +1182,16 @@ function normalizeText(value) {
 
     }
 
-    return String(value)
-        .trim()
-        .replace(/\s+/g, " ")
-        .toUpperCase();
+
+    return String(
+        value
+    )
+    .trim()
+    .replace(
+        /\s+/g,
+        " "
+    )
+    .toUpperCase();
 
 }
 
@@ -958,8 +1203,12 @@ function initializeRevealAnimations() {
         );
 
 
-    if (!elements.length) {
+    if (
+        !elements.length
+    ) {
+
         return;
+
     }
 
 
@@ -970,13 +1219,15 @@ function initializeRevealAnimations() {
         )
     ) {
 
-        elements.forEach(element => {
+        elements.forEach(
+            element => {
 
-            element.classList.add(
-                "visible"
-            );
+                element.classList.add(
+                    "visible"
+                );
 
-        });
+            }
+        );
 
         return;
 
@@ -987,39 +1238,44 @@ function initializeRevealAnimations() {
         new IntersectionObserver(
             entries => {
 
-                entries.forEach(entry => {
+                entries.forEach(
+                    entry => {
 
-                    if (
-                        entry.isIntersecting
-                    ) {
+                        if (
+                            entry.isIntersecting
+                        ) {
 
-                        entry.target.classList.add(
-                            "visible"
-                        );
+                            entry.target.classList.add(
+                                "visible"
+                            );
 
 
-                        observer.unobserve(
-                            entry.target
-                        );
+                            observer.unobserve(
+                                entry.target
+                            );
+
+                        }
 
                     }
-
-                });
+                );
 
             },
             {
-                threshold: 0.12
+                threshold:
+                    0.12
             }
         );
 
 
-    elements.forEach(element => {
+    elements.forEach(
+        element => {
 
-        observer.observe(
-            element
-        );
+            observer.observe(
+                element
+            );
 
-    });
+        }
+    );
 
 }
 
