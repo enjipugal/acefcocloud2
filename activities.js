@@ -1,177 +1,379 @@
-const menuToggle = document.getElementById("menuToggle");
-const navMenu = document.getElementById("navMenu");
+const ACTIVITIES_API =
+    "https://ecoasthub.great-site.net/backend/activities.php";
 
-if (menuToggle && navMenu) {
+document.addEventListener("DOMContentLoaded", () => {
+
+    console.log("ECOAST HUB Activities JS loaded");
+
+    initializeMobileNavigation();
+    initializeRevealAnimations();
+    loadActivitiesData();
+
+});
+
+function initializeMobileNavigation() {
+
+    const menuToggle =
+        document.getElementById("menuToggle");
+
+    const navMenu =
+        document.querySelector(".nav-menu");
+
+    if (!menuToggle || !navMenu) {
+        return;
+    }
 
     menuToggle.addEventListener("click", () => {
 
-        const isOpen = navMenu.classList.toggle("active");
+        navMenu.classList.toggle("active");
+        menuToggle.classList.toggle("active");
 
-        menuToggle.setAttribute(
-            "aria-expanded",
-            isOpen ? "true" : "false"
-        );
+    });
+
+
+    const navLinks =
+        navMenu.querySelectorAll(".nav-link");
+
+    navLinks.forEach(link => {
+
+        link.addEventListener("click", () => {
+
+            navMenu.classList.remove("active");
+
+            menuToggle.classList.remove("active");
+
+        });
 
     });
 
 }
 
-async function loadActivities() {
-
-    const activitiesGrid =
-        document.getElementById("activitiesGrid");
-
-    if (!activitiesGrid) {
-        return;
-    }
-
-    activitiesGrid.innerHTML = `
-        <div class="activity-loading">
-            Loading activities...
-        </div>
-    `;
+async function loadActivitiesData() {
 
     try {
 
-        const result = await getActivities();
+        const response =
+            await fetch(ACTIVITIES_API, {
+                method: "GET",
+                headers: {
+                    "Accept": "application/json"
+                }
+            });
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                `HTTP ${response.status}`
+            );
+
+        }
+
+        const result =
+            await response.json();
+
+
+        console.log(
+            "Activities backend response:",
+            result
+        );
+
 
         if (
             !result ||
-            !result.success ||
+            result.success !== true ||
             !Array.isArray(result.data)
         ) {
 
-            throw new Error(
-                result?.message ||
-                "Unable to load activities."
+            console.warn(
+                "Activities backend returned no usable data."
             );
+
+            return;
 
         }
 
         if (result.data.length === 0) {
 
-            activitiesGrid.innerHTML = `
-                <div class="activity-empty">
-                    <h3>No Activities Yet</h3>
-
-                    <p>
-                        ECOAST activities and events will
-                        appear here once they are added.
-                    </p>
-                </div>
-            `;
+            console.log(
+                "Activities backend is connected but currently empty. Existing HTML activities will remain visible."
+            );
 
             return;
+
         }
 
-        activitiesGrid.innerHTML =
-            result.data.map(activity => {
+        applyActivitiesData(result.data);
 
-                return createActivityCard(activity);
-
-            }).join("");
 
     } catch (error) {
 
-        console.error(
-            "Activities loading error:",
+        console.warn(
+            "Activities API could not be loaded. Existing HTML activities will remain visible.",
             error
         );
 
-        activitiesGrid.innerHTML = `
-            <div class="activity-error">
-                <h3>Unable to Load Activities</h3>
-
-                <p>
-                    Please try again later.
-                </p>
-            </div>
-        `;
     }
+
 }
 
-function createActivityCard(activity) {
+function applyActivitiesData(data) {
 
-    const title =
-        escapeHTML(activity.title || "Untitled Activity");
+    if (!Array.isArray(data) || !data.length) {
+        return;
+    }
 
-    const type =
-        escapeHTML(activity.activity_type || "Activity");
-
-    const description =
-        escapeHTML(
-            activity.description ||
-            "No description available."
+    const activityCards =
+        document.querySelectorAll(
+            ".activity-card"
         );
 
-    const image =
-        activity.image
-            ? escapeHTML(activity.image)
-            : "ECOAST Logo.png";
 
-    const date =
-        formatActivityDate(activity.activity_date);
+    if (!activityCards.length) {
 
-    const achievementHTML =
-        createAchievementHTML(activity.achievement);
+        console.warn(
+            "No .activity-card elements were found in activities.html."
+        );
 
-    return `
-        <article class="activity-card">
+        return;
 
-            <div class="activity-image">
+    }
 
-                <img
-                    src="${image}"
-                    alt="${title}"
-                >
+    data.forEach(item => {
 
-                <div class="activity-type">
-                    ${type}
-                </div>
-
-            </div>
+        if (!item) {
+            return;
+        }
 
 
-            <div class="activity-content">
+        const backendId =
+            normalizeText(item.id);
 
-                <div class="activity-date">
-                    ${date}
-                </div>
+        const backendTitle =
+            normalizeText(item.title);
 
-                <h3>
-                    ${title}
-                </h3>
 
-                <p>
-                    ${description}
-                </p>
+        let matchedCard = null;
 
-                ${achievementHTML}
+        if (backendId) {
 
-                <div class="activity-meta">
+            activityCards.forEach(card => {
 
-                    <span>
-                        ${type}
-                    </span>
+                if (matchedCard) {
+                    return;
+                }
 
-                </div>
 
-            </div>
+                const cardId =
+                    normalizeText(
+                        card.dataset.id
+                    );
 
-        </article>
-    `;
+
+                if (
+                    cardId &&
+                    cardId === backendId
+                ) {
+
+                    matchedCard = card;
+
+                }
+
+            });
+
+        }
+
+        if (!matchedCard && backendTitle) {
+
+            activityCards.forEach(card => {
+
+                if (matchedCard) {
+                    return;
+                }
+
+                const titleElement =
+                    card.querySelector(
+                        "h2, h3, h4, .activity-title"
+                    );
+
+
+                if (!titleElement) {
+                    return;
+                }
+
+
+                const cardTitle =
+                    normalizeText(
+                        titleElement.textContent
+                    );
+
+
+                if (
+                    cardTitle &&
+                    cardTitle === backendTitle
+                ) {
+
+                    matchedCard = card;
+
+                }
+
+            });
+
+        }
+
+        if (!matchedCard) {
+            return;
+        }
+
+
+        updateActivityCard(
+            matchedCard,
+            item
+        );
+
+    });
+
+
+    console.log(
+        `Applied ${data.length} activity record(s) from backend.`
+    );
+
+}
+
+function updateActivityCard(card, item) {
+
+    const titleElement =
+        card.querySelector(
+            "h2, h3, h4, .activity-title"
+        );
+
+
+    if (
+        titleElement &&
+        item.title
+    ) {
+
+        titleElement.textContent =
+            item.title;
+
+    }
+
+    const descriptionElement =
+        card.querySelector(
+            ".activity-description, p"
+        );
+
+
+    if (
+        descriptionElement &&
+        item.description
+    ) {
+
+        descriptionElement.textContent =
+            item.description;
+
+    }
+
+    const imageElement =
+        card.querySelector("img");
+
+
+    if (
+        imageElement &&
+        item.image
+    ) {
+
+        imageElement.src =
+            item.image;
+
+        imageElement.alt =
+            item.title || "ECOAST Activity";
+
+    }
+
+    const dateElement =
+        card.querySelector(
+            ".activity-date, time, .date"
+        );
+
+
+    if (
+        dateElement &&
+        item.activity_date
+    ) {
+
+        dateElement.textContent =
+            formatActivityDate(
+                item.activity_date
+            );
+
+    }
+
+    const locationElement =
+        card.querySelector(
+            ".activity-location, .location"
+        );
+
+
+    if (
+        locationElement &&
+        item.location
+    ) {
+
+        locationElement.textContent =
+            item.location;
+
+    }
+
+    const organizerElement =
+        card.querySelector(
+            ".activity-organizer, .organizer"
+        );
+
+
+    if (
+        organizerElement &&
+        item.organizer
+    ) {
+
+        organizerElement.textContent =
+            item.organizer;
+
+    }
+
+    const achievementElement =
+        card.querySelector(
+            ".activity-achievement, .achievement"
+        );
+
+
+    if (
+        achievementElement &&
+        item.achievement
+    ) {
+
+        achievementElement.textContent =
+            item.achievement;
+
+    }
+
 }
 
 function formatActivityDate(dateValue) {
 
     if (!dateValue) {
-        return "DATE TO BE ANNOUNCED";
+        return "";
     }
 
-    const date = new Date(dateValue);
+
+    const date =
+        new Date(dateValue);
+
 
     if (Number.isNaN(date.getTime())) {
-        return escapeHTML(dateValue);
+
+        return dateValue;
+
     }
 
     return date.toLocaleDateString(
@@ -181,67 +383,126 @@ function formatActivityDate(dateValue) {
             day: "numeric",
             year: "numeric"
         }
-    ).toUpperCase();
+    );
+
 }
 
-function createAchievementHTML(achievement) {
+function normalizeText(value) {
 
-    if (!achievement) {
+    if (
+        value === null ||
+        value === undefined
+    ) {
+
         return "";
+
     }
 
-    const text =
-        escapeHTML(achievement);
-
-    const items = text
-        .split(/\r?\n/)
-        .map(item => item.trim())
-        .filter(item => item !== "");
-
-    if (items.length === 0) {
-        return "";
-    }
-
-    return `
-        <div class="achievement-box">
-
-            <div class="achievement-title">
-                Achievements
-            </div>
-
-            ${items.map(item => `
-                <div class="achievement-item">
-
-                    <span class="achievement-icon">
-                        ★
-                    </span>
-
-                    <span>
-                        ${item}
-                    </span>
-
-                </div>
-            `).join("")}
-
-        </div>
-    `;
-}
-
-function escapeHTML(value) {
 
     return String(value)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+        .trim()
+        .replace(/\s+/g, " ")
+        .toUpperCase();
+
+}
+
+function initializeRevealAnimations() {
+
+    const elements =
+        document.querySelectorAll(
+            ".section-heading, .activity-card, .activity-item, .activities-section, .cta-section"
+        );
+
+
+    if (!elements.length) {
+        return;
+    }
+
+    if (
+        !(
+            "IntersectionObserver"
+            in window
+        )
+    ) {
+
+        elements.forEach(element => {
+
+            element.classList.add(
+                "visible"
+            );
+
+        });
+
+        return;
+
+    }
+
+    const observer =
+        new IntersectionObserver(
+            entries => {
+
+                entries.forEach(entry => {
+
+                    if (
+                        entry.isIntersecting
+                    ) {
+
+                        entry.target.classList.add(
+                            "visible"
+                        );
+
+
+                        observer.unobserve(
+                            entry.target
+                        );
+
+                    }
+
+                });
+
+            },
+            {
+                threshold: 0.12
+            }
+        );
+
+
+    elements.forEach(element => {
+
+        observer.observe(element);
+
+    });
+
 }
 
 document.addEventListener(
-    "DOMContentLoaded",
-    () => {
+    "click",
+    event => {
 
-        loadActivities();
+        const link =
+            event.target.closest(
+                "a[href='#']"
+            );
+
+
+        if (!link) {
+            return;
+        }
+
+
+        event.preventDefault();
+
+    }
+);
+
+window.addEventListener(
+    "error",
+    event => {
+
+        console.warn(
+            "ECOAST Activities page error:",
+            event.message
+        );
 
     }
 );
