@@ -1,1170 +1,491 @@
-document.addEventListener("DOMContentLoaded", function () {
+const FACULTIES_API =
+    "https://ecoasthub.great-site.net/backend/faculties.php";
 
-    console.log("ECOAST HUB Faculties JS loaded");
+const menuToggle =
+    document.getElementById("menuToggle");
 
-    const FACULTIES_API =
-        "https://ecoasthub.great-site.net/backend/faculties.php";
+const navMenu =
+    document.getElementById("navMenu");
 
-    const menuToggle =
-        document.getElementById("menuToggle");
+if (menuToggle && navMenu) {
 
-    const navMenu =
-        document.querySelector(".nav-menu");
+    menuToggle.addEventListener("click", () => {
 
+        navMenu.classList.toggle("open");
 
-    if (menuToggle && navMenu) {
+        const isOpen =
+            navMenu.classList.contains("open");
 
-        menuToggle.addEventListener("click", function () {
-            navMenu.classList.toggle("open");
-            menuToggle.classList.toggle("active");
+        menuToggle.setAttribute(
+            "aria-expanded",
+            String(isOpen)
+        );
 
-        });
+    });
 
+    navMenu
+        .querySelectorAll("a")
+        .forEach(link => {
 
-        const navLinks =
-            navMenu.querySelectorAll(".nav-link");
+            link.addEventListener("click", () => {
 
-        navLinks.forEach(function (link) {
-            link.addEventListener("click", function () {
                 navMenu.classList.remove("open");
-                menuToggle.classList.remove("active");
+
+                menuToggle.setAttribute(
+                    "aria-expanded",
+                    "false"
+                );
 
             });
 
         });
 
+}
+
+const facultyCards =
+    document.querySelectorAll(".faculty-card");
+
+let backendFaculties = [];
+let backendFacultiesByName = {};
+let backendFacultiesById = {};
+
+
+function normalizeName(name) {
+
+    return String(name || "")
+        .trim()
+        .replace(/\s+/g, " ")
+        .toLowerCase();
+
+}
+
+function normalizeFaculty(item) {
+
+    if (!item) {
+        return null;
     }
 
-    let facultyData = {};
-    let facultyList = [];
-    let currentFaculty = null;
 
-    const defaultFacultyData = {
+    return {
 
-        "faculty-01": {
-            id: "faculty-01",
-            name: "Faculty Name",
-            position: "Faculty Member",
-            program: "Civil Engineering",
-            specialization: "Specialization to be provided",
-            email: "Email to be provided",
-            education: "Educational background to be provided"
-        },
+        id:
+            item.id ?? null,
 
-        "faculty-02": {
-            id: "faculty-02",
-            name: "Faculty Name",
-            position: "Faculty Member",
-            program: "Electrical Engineering",
-            specialization: "Specialization to be provided",
-            email: "Email to be provided",
-            education: "Educational background to be provided"
-        },
+        name:
+            item.name ||
+            "Faculty Member",
 
-        "faculty-03": {
-            id: "faculty-03",
-            name: "Faculty Name",
-            position: "Faculty Member",
-            program: "Computer Engineering",
-            specialization: "Specialization to be provided",
-            email: "Email to be provided",
-            education: "Educational background to be provided"
-        },
+        position:
+            item.position ||
+            "Faculty Member",
 
-        "faculty-04": {
-            id: "faculty-04",
-            name: "Faculty Name",
-            position: "Faculty Member",
-            program: "Information Technology",
-            specialization: "Specialization to be provided",
-            email: "Email to be provided",
-            education: "Educational background to be provided"
-        },
+        program:
+            item.program ||
+            item.department ||
+            "",
+            
+        specialization:
+            item.specialization ||
+            "",
 
-        "faculty-05": {
-            id: "faculty-05",
-            name: "Faculty Name",
-            position: "Faculty Member",
-            program: "Computer Science",
-            specialization: "Specialization to be provided",
-            email: "Email to be provided",
-            education: "Educational background to be provided"
-        },
+        email:
+            item.email ||
+            "",
 
-        "faculty-06": {
-            id: "faculty-06",
-            name: "Faculty Name",
-            position: "Faculty Member",
-            program: "Information Technology",
-            specialization: "Specialization to be provided",
-            email: "Email to be provided",
-            education: "Educational background to be provided"
-        },
+        education:
+            item.education ||
+            "",
 
-        "faculty-07": {
-            id: "faculty-07",
-            name: "Faculty Name",
-            position: "Faculty Member",
-            program: "Civil Engineering",
-            specialization: "Specialization to be provided",
-            email: "Email to be provided",
-            education: "Educational background to be provided"
-        },
+        description:
+            item.description ||
+            item.bio ||
+            "",
 
-        "faculty-08": {
-            id: "faculty-08",
-            name: "Faculty Name",
-            position: "Faculty Member",
-            program: "Electrical Engineering",
-            specialization: "Specialization to be provided",
-            email: "Email to be provided",
-            education: "Educational background to be provided"
-        },
-
-        "faculty-09": {
-            id: "faculty-09",
-            name: "Faculty Name",
-            position: "Faculty Member",
-            program: "Computer Engineering",
-            specialization: "Specialization to be provided",
-            email: "Email to be provided",
-            education: "Educational background to be provided"
-        },
-
-        "faculty-10": {
-            id: "faculty-10",
-            name: "Faculty Name",
-            position: "Faculty Member",
-            program: "Information Technology",
-            specialization: "Specialization to be provided",
-            email: "Email to be provided",
-            education: "Educational background to be provided"
-        },
-
-        "faculty-11": {
-            id: "faculty-11",
-            name: "Faculty Name",
-            position: "Faculty Member",
-            program: "Computer Science",
-            specialization: "Specialization to be provided",
-            email: "Email to be provided",
-            education: "Educational background to be provided"
-        }
+        image:
+            item.image ||
+            ""
 
     };
 
+}
 
-    function createFacultyModal() {
+async function loadFaculties() {
+
+    console.log(
+        "Loading faculties from:",
+        FACULTIES_API
+    );
+
+
+    try {
+
+        const response =
+            await fetch(
+                FACULTIES_API,
+                {
+                    method: "GET",
+
+                    headers: {
+                        "Accept":
+                            "application/json"
+                    },
+
+                    cache: "no-store"
+                }
+            );
+
+        if (!response.ok) {
+
+            throw new Error(
+                "HTTP " +
+                response.status
+            );
+
+        }
+
+        const result =
+            await response.json();
+
+
+        console.log(
+            "Faculties API response:",
+            result
+        );
+
 
         if (
-            document.getElementById(
-                "ecoastFacultyModal"
-            )
+            !result ||
+            result.success !== true
         ) {
-            return;
+
+            throw new Error(
+                result?.message ||
+                "Faculties API returned an unsuccessful response."
+            );
+
         }
 
 
-        const modal =
-            document.createElement("div");
+        const records =
+            Array.isArray(result.data)
+                ? result.data
+                : [];
 
+        backendFaculties =
+            records
+                .map(normalizeFaculty)
+                .filter(Boolean);
 
-        modal.id =
-            "ecoastFacultyModal";
-        modal.style.display =
-            "none";
-        modal.style.opacity =
-            "0";
-        modal.innerHTML = `
 
-            <div
-                id="ecoastFacultyOverlay"
-                style="
-                    position:fixed;
-                    inset:0;
-                    background:rgba(0,0,0,0.72);
-                    z-index:999998;
-                    backdrop-filter:blur(6px);
-                "
-            ></div>
+        backendFacultiesByName = {};
+        backendFacultiesById = {};
 
+        backendFaculties.forEach(
+            faculty => {
 
-            <div
-                id="ecoastFacultyBox"
-                role="dialog"
-                aria-modal="true"
-                style="
-                    position:fixed;
-                    left:50%;
-                    top:50%;
-                    transform:translate(-50%,-50%) scale(0.96);
-                    width:min(700px, calc(100% - 40px));
-                    max-height:calc(100vh - 40px);
-                    overflow-y:auto;
-                    background:#ffffff;
-                    border-radius:18px;
-                    z-index:999999;
-                    box-shadow:0 30px 80px rgba(0,0,0,0.35);
-                    opacity:0;
-                    transition:all .25s ease;
-                "
-            >
+                const normalizedName =
+                    normalizeName(
+                        faculty.name
+                    );
 
-                <div
-                    style="
-                        background:#650019;
-                        color:white;
-                        padding:28px 32px;
-                        position:relative;
-                    "
-                >
 
-                    <button
-                        type="button"
-                        id="ecoastFacultyClose"
-                        aria-label="Close"
-                        style="
-                            position:absolute;
-                            right:18px;
-                            top:18px;
-                            width:38px;
-                            height:38px;
-                            border:1px solid rgba(255,255,255,.35);
-                            border-radius:50%;
-                            background:rgba(255,255,255,.1);
-                            color:white;
-                            font-size:24px;
-                            line-height:1;
-                            cursor:pointer;
-                        "
-                    >
-                        ×
-                    </button>
+                if (normalizedName) {
 
-
-                    <span
-                        style="
-                            display:block;
-                            font-size:12px;
-                            font-weight:800;
-                            letter-spacing:2px;
-                            margin-bottom:10px;
-                            opacity:.8;
-                        "
-                    >
-                        FACULTY PROFILE
-                    </span>
-
-
-                    <h2
-                        id="ecoastFacultyName"
-                        style="
-                            margin:0 45px 8px 0;
-                            font-size:30px;
-                            line-height:1.15;
-                            color:white;
-                        "
-                    >
-                        Faculty Name
-                    </h2>
-
-
-                    <p
-                        id="ecoastFacultyPosition"
-                        style="
-                            margin:0;
-                            font-size:15px;
-                            opacity:.85;
-                        "
-                    >
-                        Faculty Member
-                    </p>
-
-                </div>
-
-
-                <div
-                    style="
-                        padding:30px 32px;
-                    "
-                >
-
-                    <div
-                        style="
-                            padding:18px;
-                            border:1px solid #eadde1;
-                            border-radius:12px;
-                            margin-bottom:14px;
-                        "
-                    >
-
-                        <span
-                            style="
-                                display:block;
-                                font-size:11px;
-                                font-weight:800;
-                                letter-spacing:1.5px;
-                                color:#650019;
-                                margin-bottom:6px;
-                            "
-                        >
-                            PROGRAM
-                        </span>
-
-                        <strong
-                            id="ecoastFacultyProgram"
-                            style="
-                                display:block;
-                                font-size:17px;
-                                color:#292929;
-                            "
-                        >
-                            Program
-                        </strong>
-
-                    </div>
-
-
-                    <div
-                        style="
-                            padding:18px;
-                            border:1px solid #eadde1;
-                            border-radius:12px;
-                            margin-bottom:14px;
-                        "
-                    >
-
-                        <span
-                            style="
-                                display:block;
-                                font-size:11px;
-                                font-weight:800;
-                                letter-spacing:1.5px;
-                                color:#650019;
-                                margin-bottom:6px;
-                            "
-                        >
-                            SPECIALIZATION
-                        </span>
-
-                        <strong
-                            id="ecoastFacultySpecialization"
-                            style="
-                                display:block;
-                                font-size:16px;
-                                color:#333;
-                                font-weight:600;
-                            "
-                        >
-                            Specialization to be provided
-                        </strong>
-
-                    </div>
-
-
-                    <div
-                        style="
-                            padding:18px;
-                            border:1px solid #eadde1;
-                            border-radius:12px;
-                            margin-bottom:14px;
-                        "
-                    >
-
-                        <span
-                            style="
-                                display:block;
-                                font-size:11px;
-                                font-weight:800;
-                                letter-spacing:1.5px;
-                                color:#650019;
-                                margin-bottom:6px;
-                            "
-                        >
-                            EMAIL
-                        </span>
-
-                        <strong
-                            id="ecoastFacultyEmail"
-                            style="
-                                display:block;
-                                font-size:16px;
-                                color:#333;
-                                font-weight:600;
-                            "
-                        >
-                            Email to be provided
-                        </strong>
-
-                    </div>
-
-
-                    <div
-                        style="
-                            padding:18px;
-                            border:1px solid #eadde1;
-                            border-radius:12px;
-                            margin-bottom:24px;
-                        "
-                    >
-
-                        <span
-                            style="
-                                display:block;
-                                font-size:11px;
-                                font-weight:800;
-                                letter-spacing:1.5px;
-                                color:#650019;
-                                margin-bottom:6px;
-                            "
-                        >
-                            EDUCATIONAL BACKGROUND
-                        </span>
-
-                        <strong
-                            id="ecoastFacultyEducation"
-                            style="
-                                display:block;
-                                font-size:16px;
-                                color:#333;
-                                font-weight:600;
-                                line-height:1.5;
-                            "
-                        >
-                            Educational background to be provided
-                        </strong>
-
-                    </div>
-
-
-                    <div
-                        style="
-                            display:flex;
-                            justify-content:flex-end;
-                        "
-                    >
-
-                        <button
-                            type="button"
-                            id="ecoastFacultyCloseBottom"
-                            style="
-                                border:none;
-                                background:#650019;
-                                color:white;
-                                padding:12px 24px;
-                                border-radius:8px;
-                                font-weight:700;
-                                cursor:pointer;
-                                transition:.2s ease;
-                            "
-                        >
-                            Close
-                        </button>
-
-                    </div>
-
-                </div>
-
-            </div>
-        `;
-
-
-        document.body.appendChild(modal);
-
-
-        const overlay =
-            document.getElementById(
-                "ecoastFacultyOverlay"
-            );
-
-        const box =
-            document.getElementById(
-                "ecoastFacultyBox"
-            );
-
-        const closeButton =
-            document.getElementById(
-                "ecoastFacultyClose"
-            );
-
-
-        const closeBottom =
-            document.getElementById(
-                "ecoastFacultyCloseBottom"
-            );
-
-
-        overlay.addEventListener(
-            "click",
-            closeFacultyModal
-        );
-
-
-        closeButton.addEventListener(
-            "click",
-            closeFacultyModal
-        );
-
-
-        closeBottom.addEventListener(
-            "click",
-            closeFacultyModal
-        );
-
-
-        box.addEventListener(
-            "click",
-            function (event) {
-
-                event.stopPropagation();
-
-            }
-        );
-
-    }
-
-    function openFacultyModal(faculty) {
-
-        createFacultyModal();
-
-
-        const modal =
-            document.getElementById(
-                "ecoastFacultyModal"
-            );
-
-        const box =
-            document.getElementById(
-                "ecoastFacultyBox"
-            );
-
-        if (!faculty) {
-            return;
-        }
-
-        document.getElementById(
-            "ecoastFacultyName"
-        ).textContent =
-            faculty.name ||
-            "Faculty Name";
-
-
-        document.getElementById(
-            "ecoastFacultyPosition"
-        ).textContent =
-            faculty.position ||
-            "Faculty Member";
-
-
-        document.getElementById(
-            "ecoastFacultyProgram"
-        ).textContent =
-            faculty.program ||
-            "Program";
-
-
-        document.getElementById(
-            "ecoastFacultySpecialization"
-        ).textContent =
-            faculty.specialization ||
-            "Specialization to be provided";
-
-
-        document.getElementById(
-            "ecoastFacultyEmail"
-        ).textContent =
-            faculty.email ||
-            "Email to be provided";
-
-
-        document.getElementById(
-            "ecoastFacultyEducation"
-        ).textContent =
-            faculty.education ||
-            "Educational background to be provided";
-
-        currentFaculty =
-            faculty;
-
-
-        modal.style.display =
-            "block";
-
-
-        document.body.style.overflow =
-            "hidden";
-
-
-        requestAnimationFrame(function () {
-
-            modal.style.opacity =
-                "1";
-
-
-            box.style.opacity =
-                "1";
-
-
-            box.style.transform =
-                "translate(-50%, -50%) scale(1)";
-
-        });
-
-
-        console.log(
-            "Faculty modal opened:",
-            faculty.name
-        );
-
-    }
-
-    function closeFacultyModal() {
-
-        const modal =
-            document.getElementById(
-                "ecoastFacultyModal"
-            );
-
-        const box =
-            document.getElementById(
-                "ecoastFacultyBox"
-            );
-
-
-        if (!modal || !box) {
-            return;
-        }
-
-        modal.style.opacity =
-            "0";
-
-        box.style.opacity =
-            "0";
-
-        box.style.transform =
-            "translate(-50%, -50%) scale(0.96)";
-
-        setTimeout(function () {
-
-            modal.style.display =
-                "none";
-
-            document.body.style.overflow =
-                "";
-
-            currentFaculty =
-                null;
-
-        }, 250);
-
-    }
-
-    function normalizeFaculty(item, index) {
-
-        if (!item) {
-            return null;
-        }
-
-
-        const numericId =
-            item.id !== undefined &&
-            item.id !== null
-                ? item.id
-                : index + 1;
-
-
-        return {
-
-            id:
-                "faculty-" +
-                String(numericId)
-                    .padStart(2, "0"),
-
-
-            databaseId:
-                item.id ?? null,
-
-
-            name:
-                item.name ||
-                "Faculty Name",
-
-
-            position:
-                item.position ||
-                "Faculty Member",
-
-
-            program:
-                item.program ||
-                item.department ||
-                "Program",
-
-
-            specialization:
-                item.specialization ||
-                "Specialization to be provided",
-
-
-            email:
-                item.email ||
-                "Email to be provided",
-
-
-            education:
-                item.education ||
-                "Educational background to be provided",
-
-
-            image:
-                item.image ||
-                ""
-
-        };
-
-    }
-
-    async function loadFaculties() {
-
-        console.log(
-            "Loading faculty data from:",
-            FACULTIES_API
-        );
-
-
-        try {
-
-            const response =
-                await fetch(
-                    FACULTIES_API,
-                    {
-                        method: "GET",
-                        headers: {
-                            "Accept":
-                                "application/json"
-                        },
-                        cache: "no-store"
-                    }
-                );
-
-            if (!response.ok) {
-
-                throw new Error(
-                    "HTTP " +
-                    response.status
-                );
-
-            }
-
-            const result =
-                await response.json();
-
-
-            console.log(
-                "Faculty API response:",
-                result
-            );
-
-
-            if (
-                !result ||
-                result.success !== true
-            ) {
-
-                throw new Error(
-                    result?.message ||
-                    "Faculty API returned an unsuccessful response."
-                );
-
-            }
-
-            const records =
-                Array.isArray(result.data)
-                    ? result.data
-                    : [];
-
-            facultyList =
-                records
-                    .map(normalizeFaculty)
-                    .filter(Boolean);
-
-
-            facultyData = {};
-
-            facultyList.forEach(
-                function (faculty, index) {
-
-                    facultyData[
-                        faculty.id
+                    backendFacultiesByName[
+                        normalizedName
                     ] = faculty;
 
+                }
+
+
+                if (
+                    faculty.id !== null &&
+                    faculty.id !== undefined
+                ) {
+
+                    backendFacultiesById[
+                        String(faculty.id)
+                    ] = faculty;
+
+                }
+
+            }
+        );
+
+        console.log(
+            "Backend faculty records:",
+            backendFaculties.length
+        );
+
+
+        if (
+            backendFaculties.length === 0
+        ) {
+
+            console.log(
+                "Faculty table is currently empty. Existing HTML faculty cards remain unchanged."
+            );
+
+        }
+
+        return backendFaculties;
+
+    } catch (error) {
+
+        console.warn(
+            "Unable to load faculties from backend.",
+            error
+        );
+
+        backendFaculties = [];
+        backendFacultiesByName = {};
+        backendFacultiesById = {};
+        
+        return [];
+
+    }
+
+}
+
+function findBackendFaculty(card) {
+
+    if (!card) {
+        return null;
+    }
+
+    const cardId =
+        card.dataset.id ||
+        card.dataset.faculty;
+
+
+    if (cardId) {
+
+        const foundById =
+            backendFacultiesById[
+                String(cardId)
+            ];
+
+
+        if (foundById) {
+
+            return foundById;
+
+        }
+
+    }
+
+    const cardName =
+        card.dataset.name ||
+        card.querySelector("h3")
+            ?.textContent
+            ?.trim();
+
+
+    if (cardName) {
+
+        const foundByName =
+            backendFacultiesByName[
+                normalizeName(cardName)
+            ];
+
+
+        if (foundByName) {
+
+            return foundByName;
+
+        }
+
+    }
+
+
+    return null;
+
+}
+
+function applyBackendData() {
+
+    /*
+     * If the database is empty,
+     * keep all existing HTML cards.
+     */
+
+    if (
+        !backendFaculties.length
+    ) {
+
+        return;
+
+    }
+
+    facultyCards.forEach(card => {
+
+        const backendFaculty =
+            findBackendFaculty(card);
+
+
+        if (!backendFaculty) {
+
+            return;
+
+        }
+
+        const nameElement =
+            card.querySelector("h3");
+
+
+        if (
+            nameElement &&
+            backendFaculty.name
+        ) {
+
+            nameElement.textContent =
+                backendFaculty.name;
+
+        }
+
+        const positionElement =
+            card.querySelector(
+                ".faculty-card-content p"
+            );
+
+
+        if (
+            positionElement &&
+            backendFaculty.position
+        ) {
+
+            positionElement.textContent =
+                backendFaculty.position;
+
+        }
+
+        const programBadge =
+            card.querySelector(
+                ".faculty-program-badge"
+            );
+
+
+        if (
+            programBadge &&
+            backendFaculty.program
+        ) {
+
+            programBadge.textContent =
+                backendFaculty.program;
+
+        }
+
+        const facultyLabel =
+            card.querySelector(
+                ".faculty-label"
+            );
+
+
+        if (
+            facultyLabel &&
+            backendFaculty.program
+        ) {
+
+            facultyLabel.textContent =
+                backendFaculty.program;
+
+        }
+
+        const imageElement =
+            card.querySelector(
+                ".faculty-card-image img"
+            );
+
+
+        if (
+            imageElement &&
+            backendFaculty.image
+        ) {
+
+            imageElement.src =
+                backendFaculty.image;
+
+
+            imageElement.alt =
+                backendFaculty.name;
+
+        }
+
+    });
+
+}
+
+if (
+    "IntersectionObserver" in window
+) {
+
+    const observer =
+        new IntersectionObserver(
+            entries => {
+
+                entries.forEach(entry => {
 
                     if (
-                        faculty.databaseId !== null
+                        entry.isIntersecting
                     ) {
 
-                        facultyData[
-                            String(
-                                faculty.databaseId
-                            )
-                        ] = faculty;
-
-                    }
-
-                    const fallbackKey =
-                        "faculty-" +
-                        String(index + 1)
-                            .padStart(2, "0");
-
-
-                    facultyData[
-                        fallbackKey
-                    ] = faculty;
-
-                }
-            );
-
-            console.log(
-                "Faculty records loaded:",
-                facultyList.length
-            );
-
-            if (facultyList.length === 0) {
-
-                facultyData =
-                    {
-                        ...defaultFacultyData
-                    };
-
-
-                facultyList =
-                    Object.values(
-                        defaultFacultyData
-                    );
-
-
-                console.log(
-                    "Faculty table is currently empty. Using placeholder faculty data."
-                );
-
-            }
-
-
-            return facultyList;
-
-        } catch (error) {
-
-            console.error(
-                "Failed to load faculty data:",
-                error
-            );
-
-            facultyData =
-                {
-                    ...defaultFacultyData
-                };
-
-
-            facultyList =
-                Object.values(
-                    defaultFacultyData
-                );
-
-
-            console.warn(
-                "Using fallback faculty data."
-            );
-
-            return facultyList;
-
-        }
-
-    }
-
-    function getFacultyIdFromButton(
-        button,
-        index
-    ) {
-
-        let facultyId =
-            button.getAttribute(
-                "data-faculty"
-            );
-
-
-        if (!facultyId) {
-
-            facultyId =
-                button.getAttribute(
-                    "data-id"
-                );
-
-        }
-
-        if (!facultyId) {
-
-            facultyId =
-                button.getAttribute(
-                    "data-profile"
-                );
-
-        }
-
-
-        if (!facultyId) {
-
-            facultyId =
-                "faculty-" +
-                String(index + 1)
-                    .padStart(2, "0");
-
-        }
-
-        return facultyId;
-
-    }
-
-    function getFacultyForButton(
-        button,
-        index
-    ) {
-
-        const facultyId =
-            getFacultyIdFromButton(
-                button,
-                index
-            );
-
-
-        let faculty =
-            facultyData[facultyId];
-
-        if (!faculty) {
-
-            const numericId =
-                facultyId
-                    .replace(
-                        "faculty-",
-                        ""
-                    );
-
-
-            faculty =
-                facultyData[numericId];
-
-        }
-
-        if (
-            !faculty &&
-            facultyList[index]
-        ) {
-
-            faculty =
-                facultyList[index];
-
-        }
-
-        if (!faculty) {
-
-            const card =
-                button.closest(
-                    ".faculty-card, .faculty-item, article"
-                );
-
-
-            const cardName =
-                card?.querySelector(
-                    "h2, h3, h4, .faculty-name"
-                )?.textContent?.trim();
-
-
-            const cardPosition =
-                card?.querySelector(
-                    ".faculty-position, .faculty-role, .faculty-title"
-                )?.textContent?.trim();
-
-            faculty = {
-
-                id:
-                    facultyId,
-
-
-                name:
-                    cardName ||
-                    "Faculty Name",
-
-
-                position:
-                    cardPosition ||
-                    "Faculty Member",
-
-
-                program:
-                    "Program",
-
-
-                specialization:
-                    "Specialization to be provided",
-
-
-                email:
-                    "Email to be provided",
-
-
-                education:
-                    "Educational background to be provided"
-
-            };
-
-        }
-
-        return faculty;
-
-    }
-
-    function attachProfileButtons() {
-
-        const profileButtons =
-            document.querySelectorAll(
-                ".view-profile, [data-faculty], [data-id], [data-profile]"
-            );
-
-
-        let profileButtonCount =
-            0;
-
-        profileButtons.forEach(
-            function (button, index) {
-
-                const buttonText =
-                    button.textContent
-                        .trim()
-                        .toLowerCase();
-
-                if (
-                    !buttonText.includes(
-                        "view profile"
-                    ) &&
-                    !button.classList.contains(
-                        "view-profile"
-                    )
-                ) {
-
-                    return;
-
-                }
-
-
-                profileButtonCount++;
-
-                if (
-                    button.dataset
-                        .facultyListenerAttached ===
-                    "true"
-                ) {
-
-                    return;
-
-                }
-
-                button.dataset
-                    .facultyListenerAttached =
-                    "true";
-
-
-                button.addEventListener(
-                    "click",
-                    function (event) {
-
-                        event.preventDefault();
-
-                        event.stopPropagation();
-
-
-                        const faculty =
-                            getFacultyForButton(
-                                button,
-                                index
-                            );
-
-
-                        openFacultyModal(
-                            faculty
+                        entry.target.classList.add(
+                            "visible"
+                        );
+
+                        observer.unobserve(
+                            entry.target
                         );
 
                     }
-                );
+
+                });
+
+            },
+            {
+                threshold: 0.12
+            }
+        );
+
+    facultyCards.forEach(card => {
+
+        observer.observe(card);
+
+    });
+
+}
+
+document
+    .querySelectorAll('a[href="#"]')
+    .forEach(link => {
+
+        link.addEventListener(
+            "click",
+            event => {
+
+                event.preventDefault();
 
             }
         );
 
-        console.log(
-            "View Profile buttons detected:",
-            profileButtonCount
-        );
+    });
 
+loadFaculties()
+    .then(() => {
 
-        if (
-            profileButtonCount === 0
-        ) {
-
-            console.warn(
-                "WARNING: No 'View Profile' button was detected."
-            );
-
-            console.warn(
-                "Make sure your faculty cards contain a button or link with the text 'View Profile'."
-            );
-
-        }
-
-    }
-
-    document.addEventListener(
-        "keydown",
-        function (event) {
-
-            if (
-                event.key ===
-                "Escape"
-            ) {
-
-                const modal =
-                    document.getElementById(
-                        "ecoastFacultyModal"
-                    );
-
-
-                if (
-                    modal &&
-                    modal.style.display !==
-                    "none"
-                ) {
-
-                    closeFacultyModal();
-
-                }
-
-            }
-
-        }
-    );
-
-    async function initializeFaculties() {
-
-        createFacultyModal();
-
-        await loadFaculties();
-
-        attachProfileButtons();
+        applyBackendData();
 
 
         console.log(
-            "ECOAST HUB Faculty Directory initialized."
+            "ECOAST HUB Faculties page initialized successfully."
         );
 
-    }
+    })
+    .catch(error => {
 
-    initializeFaculties();
+        console.error(
+            "Faculty initialization error:",
+            error
+        );
 
-});
+    });
