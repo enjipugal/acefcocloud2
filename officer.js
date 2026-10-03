@@ -1,18 +1,11 @@
-/* =========================================================
-   ECOAST HUB - OFFICERS PAGE
-   ========================================================= */
-
-
-/* =========================================================
-   MOBILE NAVIGATION
-   ========================================================= */
+const OFFICERS_API =
+    "https://ecoasthub.great-site.net/backend/officer.php";
 
 const menuToggle =
     document.getElementById("menuToggle");
 
 const navMenu =
     document.querySelector(".nav-menu");
-
 
 if (menuToggle && navMenu) {
 
@@ -25,11 +18,10 @@ if (menuToggle && navMenu) {
 
         menuToggle.setAttribute(
             "aria-expanded",
-            isOpen
+            String(isOpen)
         );
 
     });
-
 
     navMenu
         .querySelectorAll("a")
@@ -50,331 +42,332 @@ if (menuToggle && navMenu) {
 
 }
 
-
-/* =========================================================
-   OFFICER MODAL
-   ========================================================= */
-
-const officerModal =
-    document.getElementById("officerModal");
-
-const officerModalOverlay =
-    document.getElementById(
-        "officerModalOverlay"
-    );
-
-const officerModalClose =
-    document.getElementById(
-        "officerModalClose"
-    );
-
-const officerModalCloseBottom =
-    document.getElementById(
-        "officerModalCloseBottom"
-    );
-
-
-/* Modal fields */
-
-const modalOfficerInitials =
-    document.getElementById(
-        "modalOfficerInitials"
-    );
-
-const modalOfficerName =
-    document.getElementById(
-        "modalOfficerName"
-    );
-
-const modalOfficerPosition =
-    document.getElementById(
-        "modalOfficerPosition"
-    );
-
-const modalOfficerProgram =
-    document.getElementById(
-        "modalOfficerProgram"
-    );
-
-const modalOfficerYear =
-    document.getElementById(
-        "modalOfficerYear"
-    );
-
-const modalOfficerDescription =
-    document.getElementById(
-        "modalOfficerDescription"
-    );
-
-
-/* =========================================================
-   OFFICER CARDS
-   ========================================================= */
-
 const officerCards =
-    document.querySelectorAll(
-        ".officer-card"
-    );
+    document.querySelectorAll(".officer-card");
 
+let backendOfficers = [];
+let backendOfficersByName = {};
+let backendOfficersById = {};
 
-/* =========================================================
-   INITIALS
-   ========================================================= */
+function normalizeName(name) {
 
-function getInitials(name) {
-
-    if (!name) {
-        return "ON";
-    }
-
-
-    const words =
-        name.trim().split(/\s+/);
-
-
-    if (words.length === 1) {
-
-        return words[0]
-            .substring(0, 2)
-            .toUpperCase();
-
-    }
-
-
-    return (
-        words[0][0] +
-        words[words.length - 1][0]
-    ).toUpperCase();
+    return String(name || "")
+        .trim()
+        .replace(/\s+/g, " ")
+        .toLowerCase();
 
 }
 
+function normalizeOfficer(item) {
 
-/* =========================================================
-   OPEN MODAL
-   ========================================================= */
-
-function openOfficerModal(card) {
-
-    if (!officerModal || !card) {
-        return;
+    if (!item) {
+        return null;
     }
 
 
-    const name =
-        card.dataset.name ||
-        "Officer Name";
+    return {
 
-    const position =
-        card.dataset.position ||
-        "Student Officer";
+        id:
+            item.id ?? null,
 
-    const program =
-        card.dataset.program ||
-        "ECOAST";
+        name:
+            item.name ||
+            "Officer Name",
 
-    const year =
-        card.dataset.year ||
-        "To Be Updated";
+        position:
+            item.position ||
+            "Student Officer",
 
-    const description =
-        card.dataset.description ||
-        "Officer profile information will be added once the official details are available.";
+        program:
+            item.program ||
+            item.department ||
+            "",
 
+        year:
+            item.year ||
+            item.year_level ||
+            "",
 
-    /* Set values */
+        description:
+            item.description ||
+            item.bio ||
+            "",
 
-    if (modalOfficerInitials) {
+        image:
+            item.image ||
+            ""
 
-        modalOfficerInitials.textContent =
-            getInitials(name);
-
-    }
-
-
-    if (modalOfficerName) {
-
-        modalOfficerName.textContent =
-            name;
-
-    }
-
-
-    if (modalOfficerPosition) {
-
-        modalOfficerPosition.textContent =
-            position.toUpperCase();
-
-    }
-
-
-    if (modalOfficerProgram) {
-
-        modalOfficerProgram.textContent =
-            program;
-
-    }
-
-
-    if (modalOfficerYear) {
-
-        modalOfficerYear.textContent =
-            year;
-
-    }
-
-
-    if (modalOfficerDescription) {
-
-        modalOfficerDescription.textContent =
-            description;
-
-    }
-
-
-    /* Show */
-
-    officerModal.classList.add("show");
-
-    officerModal.setAttribute(
-        "aria-hidden",
-        "false"
-    );
-
-    document.body.style.overflow =
-        "hidden";
-
-
-    if (officerModalClose) {
-
-        setTimeout(() => {
-
-            officerModalClose.focus();
-
-        }, 50);
-
-    }
+    };
 
 }
 
+async function loadOfficers() {
 
-/* =========================================================
-   CLOSE MODAL
-   ========================================================= */
-
-function closeOfficerModal() {
-
-    if (!officerModal) {
-        return;
-    }
-
-
-    officerModal.classList.remove("show");
-
-    officerModal.setAttribute(
-        "aria-hidden",
-        "true"
+    console.log(
+        "Loading officers from:",
+        OFFICERS_API
     );
 
-    document.body.style.overflow =
-        "";
 
-}
+    try {
+
+        const response =
+            await fetch(
+                OFFICERS_API,
+                {
+                    method: "GET",
+
+                    headers: {
+                        "Accept":
+                            "application/json"
+                    },
+
+                    cache: "no-store"
+                }
+            );
 
 
-/* =========================================================
-   VIEW PROFILE BUTTONS
-   ========================================================= */
+        if (!response.ok) {
 
-officerCards.forEach(card => {
+            throw new Error(
+                "HTTP " +
+                response.status
+            );
 
-    const viewButton =
-        card.querySelector(
-            ".view-profile"
+        }
+
+
+        const result =
+            await response.json();
+
+        console.log(
+            "Officers API response:",
+            result
         );
 
 
-    if (!viewButton) {
-        return;
-    }
-
-
-    viewButton.addEventListener(
-        "click",
-        () => {
-
-            openOfficerModal(card);
-
-        }
-    );
-
-});
-
-
-/* =========================================================
-   CLOSE BUTTONS
-   ========================================================= */
-
-if (officerModalClose) {
-
-    officerModalClose.addEventListener(
-        "click",
-        closeOfficerModal
-    );
-
-}
-
-
-if (officerModalCloseBottom) {
-
-    officerModalCloseBottom.addEventListener(
-        "click",
-        closeOfficerModal
-    );
-
-}
-
-
-/* =========================================================
-   CLICK OUTSIDE MODAL
-   ========================================================= */
-
-if (officerModalOverlay) {
-
-    officerModalOverlay.addEventListener(
-        "click",
-        closeOfficerModal
-    );
-
-}
-
-
-/* =========================================================
-   ESC KEY
-   ========================================================= */
-
-document.addEventListener(
-    "keydown",
-    event => {
-
         if (
-            event.key === "Escape" &&
-            officerModal &&
-            officerModal.classList.contains("show")
+            !result ||
+            result.success !== true
         ) {
 
-            closeOfficerModal();
+            throw new Error(
+                result?.message ||
+                "Officers API returned an unsuccessful response."
+            );
+
+        }
+
+        const records =
+            Array.isArray(result.data)
+                ? result.data
+                : [];
+
+        backendOfficers =
+            records
+                .map(normalizeOfficer)
+                .filter(Boolean);
+
+
+        backendOfficersByName = {};
+        backendOfficersById = {};
+
+        backendOfficers.forEach(
+            officer => {
+
+                const normalizedName =
+                    normalizeName(
+                        officer.name
+                    );
+
+
+                if (normalizedName) {
+
+                    backendOfficersByName[
+                        normalizedName
+                    ] = officer;
+
+                }
+
+
+                if (
+                    officer.id !== null &&
+                    officer.id !== undefined
+                ) {
+
+                    backendOfficersById[
+                        String(officer.id)
+                    ] = officer;
+
+                }
+
+            }
+        );
+
+        console.log(
+            "Backend officer records:",
+            backendOfficers.length
+        );
+
+
+        if (
+            backendOfficers.length === 0
+        ) {
+
+            console.log(
+                "Officer table is currently empty. Existing HTML officer cards remain unchanged."
+            );
+
+        }
+
+        return backendOfficers;
+
+    } catch (error) {
+
+        console.warn(
+            "Unable to load officers from backend.",
+            error
+        );
+
+        backendOfficers = [];
+        backendOfficersByName = {};
+        backendOfficersById = {};
+       
+        return [];
+
+    }
+
+}
+
+function findBackendOfficer(card) {
+
+    if (!card) {
+        return null;
+    }
+
+    const cardId =
+        card.dataset.id ||
+        card.dataset.officer;
+
+
+    if (cardId) {
+
+        const foundById =
+            backendOfficersById[
+                String(cardId)
+            ];
+
+
+        if (foundById) {
+
+            return foundById;
 
         }
 
     }
-);
+
+    const cardName =
+        card.dataset.name ||
+        card.querySelector("h3")
+            ?.textContent
+            ?.trim();
 
 
-/* =========================================================
-   CARD REVEAL ANIMATION
-   ========================================================= */
+    if (cardName) {
 
-if ("IntersectionObserver" in window) {
+        const foundByName =
+            backendOfficersByName[
+                normalizeName(cardName)
+            ];
+
+
+        if (foundByName) {
+
+            return foundByName;
+
+        }
+
+    }
+
+
+    return null;
+
+}
+
+function applyBackendData() {
+
+    if (
+        !backendOfficers.length
+    ) {
+
+        return;
+
+    }
+
+
+    officerCards.forEach(card => {
+
+        const backendOfficer =
+            findBackendOfficer(card);
+
+
+        if (!backendOfficer) {
+
+            return;
+
+        }
+
+        const nameElement =
+            card.querySelector("h3");
+
+
+        if (
+            nameElement &&
+            backendOfficer.name
+        ) {
+
+            nameElement.textContent =
+                backendOfficer.name;
+
+        }
+
+        const positionElement =
+            card.querySelector(".officer-label");
+
+
+        if (
+            positionElement &&
+            backendOfficer.position
+        ) {
+
+            positionElement.textContent =
+                backendOfficer.position;
+
+        }
+
+        const imageElement =
+            card.querySelector(
+                ".officer-image img"
+            );
+
+
+        if (
+            imageElement &&
+            backendOfficer.image
+        ) {
+
+            imageElement.src =
+                backendOfficer.image;
+
+        }
+
+    });
+
+}
+
+if (
+    "IntersectionObserver" in window
+) {
 
     const observer =
         new IntersectionObserver(
@@ -389,6 +382,7 @@ if ("IntersectionObserver" in window) {
                         entry.target.classList.add(
                             "visible"
                         );
+
 
                         observer.unobserve(
                             entry.target
@@ -413,11 +407,6 @@ if ("IntersectionObserver" in window) {
 
 }
 
-
-/* =========================================================
-   PREVENT EMPTY LINKS
-   ========================================================= */
-
 document
     .querySelectorAll('a[href="#"]')
     .forEach(link => {
@@ -429,6 +418,26 @@ document
                 event.preventDefault();
 
             }
+        );
+
+    });
+
+loadOfficers()
+    .then(() => {
+
+        applyBackendData();
+
+
+        console.log(
+            "ECOAST HUB Officers page initialized successfully."
+        );
+
+    })
+    .catch(error => {
+
+        console.error(
+            "Officer initialization error:",
+            error
         );
 
     });
