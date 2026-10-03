@@ -1,14 +1,3 @@
-/* =========================================================
-   ECOAST HUB
-   ANNOUNCEMENTS.JS
-   Examination Schedule
-========================================================= */
-
-
-/* =========================================================
-   NAVIGATION
-========================================================= */
-
 const menuToggle = document.getElementById("menuToggle");
 const navMenu = document.querySelector(".nav-menu");
 
@@ -35,11 +24,50 @@ if (menuToggle && navMenu) {
 
 }
 
+async function loadAnnouncements() {
+
+    try {
+
+        if (typeof getAnnouncements !== "function") {
+
+            console.warn(
+                "ECOAST API is not available. Make sure api.js is loaded before announcements.js."
+            );
+
+            return;
+
+        }
 
 
-/* =========================================================
-   EXAMINATION INFORMATION
-========================================================= */
+        const result = await getAnnouncements();
+
+
+        if (!result || !result.success) {
+
+            console.error(
+                "Announcements API error:",
+                result?.message || "Unable to retrieve announcements."
+            );
+
+            return;
+
+        }
+
+        console.log(
+            "ECOAST announcements loaded:",
+            result.data || []
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Failed to load announcements:",
+            error
+        );
+
+    }
+
+}
 
 const examInformation = {
 
@@ -69,19 +97,7 @@ const examInformation = {
 
 };
 
-
-
-/* =========================================================
-   OFFICIAL EXAMINATION MATRIX
-
-   PRELIMINARY AND MIDTERM USE THE SAME MATRIX
-========================================================= */
-
 const examinationMatrix = {
-
-    /* =====================================================
-       FIRST YEAR
-    ====================================================== */
 
     first: [
 
@@ -316,12 +332,6 @@ const examinationMatrix = {
 
     ],
 
-
-
-    /* =====================================================
-       SECOND YEAR
-    ====================================================== */
-
     second: [
 
         {
@@ -545,12 +555,6 @@ const examinationMatrix = {
 
     ],
 
-
-
-    /* =====================================================
-       THIRD YEAR
-    ====================================================== */
-
     third: [
 
         {
@@ -742,41 +746,19 @@ const examinationMatrix = {
 
 };
 
-
-
-/* =========================================================
-   PROGRAM INFORMATION
-========================================================= */
-
 const programInformation = {
 
     CE: "Civil Engineering",
-
     EE: "Electrical Engineering",
-
     CPE: "Computer Engineering",
-
     IT: "Information Technology",
-
     CS: "Computer Science"
 
 };
 
-
-
-/* =========================================================
-   VARIABLES
-========================================================= */
-
 let currentExam = "preliminary";
 let currentYear = "first";
 let currentProgram = "CE";
-
-
-
-/* =========================================================
-   DOM ELEMENTS
-========================================================= */
 
 const scheduleModal =
     document.getElementById("scheduleModal");
@@ -808,18 +790,11 @@ const programCode =
 const programName =
     document.getElementById("programName");
 
-
-
-/* =========================================================
-   OPEN MODAL
-========================================================= */
-
 function openSchedule(examType) {
 
     if (!scheduleModal) {
         return;
     }
-
 
     if (!examInformation[examType]) {
         return;
@@ -844,8 +819,6 @@ function openSchedule(examType) {
 
 
     currentYear = "first";
-
-
     currentProgram = "CE";
 
 
@@ -858,17 +831,10 @@ function openSchedule(examType) {
     renderSchedule();
 
 
-    /*
-       Force modal to appear.
-       This avoids depending on a specific
-       CSS class such as .open or .active.
-    */
-
     scheduleModal.style.display = "flex";
-
     scheduleModal.style.visibility = "visible";
-
     scheduleModal.style.opacity = "1";
+
 
     scheduleModal.setAttribute(
         "aria-hidden",
@@ -880,12 +846,6 @@ function openSchedule(examType) {
 
 }
 
-
-
-/* =========================================================
-   CLOSE MODAL
-========================================================= */
-
 function closeSchedule() {
 
     if (!scheduleModal) {
@@ -894,9 +854,7 @@ function closeSchedule() {
 
 
     scheduleModal.style.display = "none";
-
     scheduleModal.style.visibility = "hidden";
-
     scheduleModal.style.opacity = "0";
 
 
@@ -909,12 +867,6 @@ function closeSchedule() {
     document.body.style.overflow = "";
 
 }
-
-
-
-/* =========================================================
-   VIEW SCHEDULE BUTTONS
-========================================================= */
 
 document
     .querySelectorAll(".schedule-btn")
@@ -935,12 +887,6 @@ document
         );
 
     });
-
-
-
-/* =========================================================
-   PROGRAM TABS
-========================================================= */
 
 document
     .querySelectorAll(".program-tab")
@@ -964,8 +910,6 @@ document
 
     });
 
-
-
 function updateProgramTabs() {
 
     document
@@ -985,12 +929,6 @@ function updateProgramTabs() {
 
 }
 
-
-
-/* =========================================================
-   PROGRAM NAME
-========================================================= */
-
 function updateProgramInformation() {
 
     if (!programCode || !programName) {
@@ -1008,22 +946,14 @@ function updateProgramInformation() {
 
 }
 
-
-
-/* =========================================================
-   YEAR TABS
-========================================================= */
-
 function createYearTabs() {
 
     const yearTabs =
         document.getElementById("yearTabs");
 
-
     if (!yearTabs) {
         return;
     }
-
 
     yearTabs.innerHTML = `
 
@@ -1053,7 +983,6 @@ function createYearTabs() {
 
     `;
 
-
     yearTabs
         .querySelectorAll(".year-tab")
         .forEach(function (tab) {
@@ -1076,7 +1005,6 @@ function createYearTabs() {
 
 }
 
-
 function updateYearTabs() {
 
     document
@@ -1095,12 +1023,6 @@ function updateYearTabs() {
         });
 
 }
-
-
-
-/* =========================================================
-   RENDER SCHEDULE
-========================================================= */
 
 function renderSchedule() {
 
@@ -1140,7 +1062,6 @@ function renderSchedule() {
 
     };
 
-
     let html = `
 
         <div class="schedule-heading">
@@ -1162,7 +1083,6 @@ function renderSchedule() {
             </span>
 
         </div>
-
 
         <div class="schedule-table-wrapper">
 
@@ -1206,11 +1126,6 @@ function renderSchedule() {
 
     schedule.forEach(function (item) {
 
-
-        /* =============================================
-           BREAK ROW
-        ============================================== */
-
         if (item.break) {
 
             html += `
@@ -1230,12 +1145,7 @@ function renderSchedule() {
             return;
 
         }
-
-
-        /* =============================================
-           NORMAL ROW
-        ============================================== */
-
+       
         html += `
 
             <tr>
@@ -1285,7 +1195,6 @@ function renderSchedule() {
 
     });
 
-
     html += `
 
                 </tbody>
@@ -1296,17 +1205,10 @@ function renderSchedule() {
 
     `;
 
-
     modalSchedule.innerHTML =
         html;
 
 }
-
-
-
-/* =========================================================
-   CLOSE BUTTONS
-========================================================= */
 
 if (modalClose) {
 
@@ -1323,7 +1225,6 @@ if (modalClose) {
 
 }
 
-
 if (modalCloseBottom) {
 
     modalCloseBottom.addEventListener(
@@ -1339,7 +1240,6 @@ if (modalCloseBottom) {
 
 }
 
-
 if (modalOverlay) {
 
     modalOverlay.addEventListener(
@@ -1352,12 +1252,6 @@ if (modalOverlay) {
     );
 
 }
-
-
-
-/* =========================================================
-   ESC KEY
-========================================================= */
 
 document.addEventListener(
     "keydown",
@@ -1376,12 +1270,6 @@ document.addEventListener(
     }
 );
 
-
-
-/* =========================================================
-   INITIALIZATION
-========================================================= */
-
 createYearTabs();
 
 updateProgramTabs();
@@ -1392,10 +1280,6 @@ updateYearTabs();
 
 renderSchedule();
 
-
-/*
-   Make sure modal is hidden on page load.
-*/
 
 if (scheduleModal) {
 
@@ -1411,3 +1295,12 @@ if (scheduleModal) {
     );
 
 }
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        loadAnnouncements();
+
+    }
+);
