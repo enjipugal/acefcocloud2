@@ -1,36 +1,31 @@
-/* =========================================================
-   ECOAST HUB
-   FACULTY DIRECTORY JAVASCRIPT
-   © ECOAST Ace Pugal '26
-   ========================================================= */
-
 document.addEventListener("DOMContentLoaded", function () {
 
     console.log("ECOAST HUB Faculties JS loaded");
 
+    const FACULTIES_API =
+        "https://ecoasthub.great-site.net/backend/faculties.php";
 
-    /* =====================================================
-       MOBILE NAVIGATION
-       ===================================================== */
+    const menuToggle =
+        document.getElementById("menuToggle");
 
-    const menuToggle = document.getElementById("menuToggle");
-    const navMenu = document.querySelector(".nav-menu");
+    const navMenu =
+        document.querySelector(".nav-menu");
+
 
     if (menuToggle && navMenu) {
 
         menuToggle.addEventListener("click", function () {
-
             navMenu.classList.toggle("open");
             menuToggle.classList.toggle("active");
 
         });
 
-        const navLinks = navMenu.querySelectorAll(".nav-link");
+
+        const navLinks =
+            navMenu.querySelectorAll(".nav-link");
 
         navLinks.forEach(function (link) {
-
             link.addEventListener("click", function () {
-
                 navMenu.classList.remove("open");
                 menuToggle.classList.remove("active");
 
@@ -40,15 +35,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
     }
 
+    let facultyData = {};
+    let facultyList = [];
+    let currentFaculty = null;
 
-    /* =====================================================
-       FACULTY DATA
-       11 FACULTY PROFILES
-       ===================================================== */
-
-    const facultyData = {
+    const defaultFacultyData = {
 
         "faculty-01": {
+            id: "faculty-01",
             name: "Faculty Name",
             position: "Faculty Member",
             program: "Civil Engineering",
@@ -58,6 +52,7 @@ document.addEventListener("DOMContentLoaded", function () {
         },
 
         "faculty-02": {
+            id: "faculty-02",
             name: "Faculty Name",
             position: "Faculty Member",
             program: "Electrical Engineering",
@@ -67,6 +62,7 @@ document.addEventListener("DOMContentLoaded", function () {
         },
 
         "faculty-03": {
+            id: "faculty-03",
             name: "Faculty Name",
             position: "Faculty Member",
             program: "Computer Engineering",
@@ -76,6 +72,7 @@ document.addEventListener("DOMContentLoaded", function () {
         },
 
         "faculty-04": {
+            id: "faculty-04",
             name: "Faculty Name",
             position: "Faculty Member",
             program: "Information Technology",
@@ -85,6 +82,7 @@ document.addEventListener("DOMContentLoaded", function () {
         },
 
         "faculty-05": {
+            id: "faculty-05",
             name: "Faculty Name",
             position: "Faculty Member",
             program: "Computer Science",
@@ -94,6 +92,7 @@ document.addEventListener("DOMContentLoaded", function () {
         },
 
         "faculty-06": {
+            id: "faculty-06",
             name: "Faculty Name",
             position: "Faculty Member",
             program: "Information Technology",
@@ -103,6 +102,7 @@ document.addEventListener("DOMContentLoaded", function () {
         },
 
         "faculty-07": {
+            id: "faculty-07",
             name: "Faculty Name",
             position: "Faculty Member",
             program: "Civil Engineering",
@@ -112,6 +112,7 @@ document.addEventListener("DOMContentLoaded", function () {
         },
 
         "faculty-08": {
+            id: "faculty-08",
             name: "Faculty Name",
             position: "Faculty Member",
             program: "Electrical Engineering",
@@ -121,6 +122,7 @@ document.addEventListener("DOMContentLoaded", function () {
         },
 
         "faculty-09": {
+            id: "faculty-09",
             name: "Faculty Name",
             position: "Faculty Member",
             program: "Computer Engineering",
@@ -130,6 +132,7 @@ document.addEventListener("DOMContentLoaded", function () {
         },
 
         "faculty-10": {
+            id: "faculty-10",
             name: "Faculty Name",
             position: "Faculty Member",
             program: "Information Technology",
@@ -139,6 +142,7 @@ document.addEventListener("DOMContentLoaded", function () {
         },
 
         "faculty-11": {
+            id: "faculty-11",
             name: "Faculty Name",
             position: "Faculty Member",
             program: "Computer Science",
@@ -150,28 +154,27 @@ document.addEventListener("DOMContentLoaded", function () {
     };
 
 
-    /* =====================================================
-       CURRENT FACULTY
-       ===================================================== */
-
-    let currentFaculty = null;
-
-
-    /* =====================================================
-       CREATE FACULTY MODAL
-       ===================================================== */
-
     function createFacultyModal() {
 
-        if (document.getElementById("ecoastFacultyModal")) {
+        if (
+            document.getElementById(
+                "ecoastFacultyModal"
+            )
+        ) {
             return;
         }
 
 
-        const modal = document.createElement("div");
+        const modal =
+            document.createElement("div");
 
-        modal.id = "ecoastFacultyModal";
 
+        modal.id =
+            "ecoastFacultyModal";
+        modal.style.display =
+            "none";
+        modal.style.opacity =
+            "0";
         modal.innerHTML = `
 
             <div
@@ -206,8 +209,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     transition:all .25s ease;
                 "
             >
-
-                <!-- HEADER -->
 
                 <div
                     style="
@@ -282,15 +283,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 </div>
 
 
-                <!-- BODY -->
-
                 <div
                     style="
                         padding:30px 32px;
                     "
                 >
-
-                    <!-- PROGRAM -->
 
                     <div
                         style="
@@ -327,8 +324,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     </div>
 
-
-                    <!-- SPECIALIZATION -->
 
                     <div
                         style="
@@ -367,8 +362,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     </div>
 
 
-                    <!-- EMAIL -->
-
                     <div
                         style="
                             padding:18px;
@@ -405,8 +398,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     </div>
 
-
-                    <!-- EDUCATION -->
 
                     <div
                         style="
@@ -446,8 +437,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     </div>
 
 
-                    <!-- FOOTER -->
-
                     <div
                         style="
                             display:flex;
@@ -483,10 +472,6 @@ document.addEventListener("DOMContentLoaded", function () {
         document.body.appendChild(modal);
 
 
-        /* =================================================
-           GET MODAL ELEMENTS
-           ================================================= */
-
         const overlay =
             document.getElementById(
                 "ecoastFacultyOverlay"
@@ -502,15 +487,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 "ecoastFacultyClose"
             );
 
+
         const closeBottom =
             document.getElementById(
                 "ecoastFacultyCloseBottom"
             );
 
-
-        /* =================================================
-           CLOSE EVENTS
-           ================================================= */
 
         overlay.addEventListener(
             "click",
@@ -530,8 +512,6 @@ document.addEventListener("DOMContentLoaded", function () {
         );
 
 
-        /* Prevent clicks inside box from closing */
-
         box.addEventListener(
             "click",
             function (event) {
@@ -542,11 +522,6 @@ document.addEventListener("DOMContentLoaded", function () {
         );
 
     }
-
-
-    /* =====================================================
-       OPEN FACULTY MODAL
-       ===================================================== */
 
     function openFacultyModal(faculty) {
 
@@ -563,57 +538,72 @@ document.addEventListener("DOMContentLoaded", function () {
                 "ecoastFacultyBox"
             );
 
-
-        /* =================================================
-           UPDATE CONTENT
-           ================================================= */
+        if (!faculty) {
+            return;
+        }
 
         document.getElementById(
             "ecoastFacultyName"
-        ).textContent = faculty.name;
+        ).textContent =
+            faculty.name ||
+            "Faculty Name";
 
 
         document.getElementById(
             "ecoastFacultyPosition"
-        ).textContent = faculty.position;
+        ).textContent =
+            faculty.position ||
+            "Faculty Member";
 
 
         document.getElementById(
             "ecoastFacultyProgram"
-        ).textContent = faculty.program;
+        ).textContent =
+            faculty.program ||
+            "Program";
 
 
         document.getElementById(
             "ecoastFacultySpecialization"
-        ).textContent = faculty.specialization;
+        ).textContent =
+            faculty.specialization ||
+            "Specialization to be provided";
 
 
         document.getElementById(
             "ecoastFacultyEmail"
-        ).textContent = faculty.email;
+        ).textContent =
+            faculty.email ||
+            "Email to be provided";
 
 
         document.getElementById(
             "ecoastFacultyEducation"
-        ).textContent = faculty.education;
+        ).textContent =
+            faculty.education ||
+            "Educational background to be provided";
+
+        currentFaculty =
+            faculty;
 
 
-        /* =================================================
-           SHOW
-           ================================================= */
+        modal.style.display =
+            "block";
 
-        currentFaculty = faculty;
 
-        modal.style.display = "block";
-
-        document.body.style.overflow = "hidden";
+        document.body.style.overflow =
+            "hidden";
 
 
         requestAnimationFrame(function () {
 
-            modal.style.opacity = "1";
+            modal.style.opacity =
+                "1";
 
-            box.style.opacity = "1";
+
+            box.style.opacity =
+                "1";
+
 
             box.style.transform =
                 "translate(-50%, -50%) scale(1)";
@@ -627,11 +617,6 @@ document.addEventListener("DOMContentLoaded", function () {
         );
 
     }
-
-
-    /* =====================================================
-       CLOSE FACULTY MODAL
-       ===================================================== */
 
     function closeFacultyModal() {
 
@@ -650,210 +635,510 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
+        modal.style.opacity =
+            "0";
 
-        modal.style.opacity = "0";
-
-        box.style.opacity = "0";
+        box.style.opacity =
+            "0";
 
         box.style.transform =
             "translate(-50%, -50%) scale(0.96)";
 
-
         setTimeout(function () {
 
-            modal.style.display = "none";
+            modal.style.display =
+                "none";
 
-            document.body.style.overflow = "";
+            document.body.style.overflow =
+                "";
 
-            currentFaculty = null;
+            currentFaculty =
+                null;
 
         }, 250);
 
     }
 
+    function normalizeFaculty(item, index) {
 
-    /* =====================================================
-       FIND VIEW PROFILE BUTTONS
-       ===================================================== */
-
-    const profileButtons =
-        document.querySelectorAll(
-            ".view-profile, [data-faculty], [data-id], [data-profile]"
-        );
-
-
-    let profileButtonCount = 0;
-
-
-    profileButtons.forEach(function (button, index) {
-
-        const buttonText =
-            button.textContent
-                .trim()
-                .toLowerCase();
-
-
-        /*
-         * Only handle actual View Profile buttons.
-         */
-
-        if (
-            !buttonText.includes("view profile") &&
-            !button.classList.contains("view-profile")
-        ) {
-            return;
+        if (!item) {
+            return null;
         }
 
 
-        profileButtonCount++;
+        const numericId =
+            item.id !== undefined &&
+            item.id !== null
+                ? item.id
+                : index + 1;
 
 
-        button.addEventListener(
-            "click",
-            function (event) {
+        return {
 
-                event.preventDefault();
-                event.stopPropagation();
+            id:
+                "faculty-" +
+                String(numericId)
+                    .padStart(2, "0"),
 
 
-                /* =====================================
-                   GET FACULTY ID
-                   ===================================== */
+            databaseId:
+                item.id ?? null,
 
-                let facultyId =
-                    button.getAttribute(
-                        "data-faculty"
+
+            name:
+                item.name ||
+                "Faculty Name",
+
+
+            position:
+                item.position ||
+                "Faculty Member",
+
+
+            program:
+                item.program ||
+                item.department ||
+                "Program",
+
+
+            specialization:
+                item.specialization ||
+                "Specialization to be provided",
+
+
+            email:
+                item.email ||
+                "Email to be provided",
+
+
+            education:
+                item.education ||
+                "Educational background to be provided",
+
+
+            image:
+                item.image ||
+                ""
+
+        };
+
+    }
+
+    async function loadFaculties() {
+
+        console.log(
+            "Loading faculty data from:",
+            FACULTIES_API
+        );
+
+
+        try {
+
+            const response =
+                await fetch(
+                    FACULTIES_API,
+                    {
+                        method: "GET",
+                        headers: {
+                            "Accept":
+                                "application/json"
+                        },
+                        cache: "no-store"
+                    }
+                );
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "HTTP " +
+                    response.status
+                );
+
+            }
+
+            const result =
+                await response.json();
+
+
+            console.log(
+                "Faculty API response:",
+                result
+            );
+
+
+            if (
+                !result ||
+                result.success !== true
+            ) {
+
+                throw new Error(
+                    result?.message ||
+                    "Faculty API returned an unsuccessful response."
+                );
+
+            }
+
+            const records =
+                Array.isArray(result.data)
+                    ? result.data
+                    : [];
+
+            facultyList =
+                records
+                    .map(normalizeFaculty)
+                    .filter(Boolean);
+
+
+            facultyData = {};
+
+            facultyList.forEach(
+                function (faculty, index) {
+
+                    facultyData[
+                        faculty.id
+                    ] = faculty;
+
+
+                    if (
+                        faculty.databaseId !== null
+                    ) {
+
+                        facultyData[
+                            String(
+                                faculty.databaseId
+                            )
+                        ] = faculty;
+
+                    }
+
+                    const fallbackKey =
+                        "faculty-" +
+                        String(index + 1)
+                            .padStart(2, "0");
+
+
+                    facultyData[
+                        fallbackKey
+                    ] = faculty;
+
+                }
+            );
+
+            console.log(
+                "Faculty records loaded:",
+                facultyList.length
+            );
+
+            if (facultyList.length === 0) {
+
+                facultyData =
+                    {
+                        ...defaultFacultyData
+                    };
+
+
+                facultyList =
+                    Object.values(
+                        defaultFacultyData
                     );
 
 
-                if (!facultyId) {
+                console.log(
+                    "Faculty table is currently empty. Using placeholder faculty data."
+                );
 
-                    facultyId =
-                        button.getAttribute(
-                            "data-id"
-                        );
+            }
+
+
+            return facultyList;
+
+        } catch (error) {
+
+            console.error(
+                "Failed to load faculty data:",
+                error
+            );
+
+            facultyData =
+                {
+                    ...defaultFacultyData
+                };
+
+
+            facultyList =
+                Object.values(
+                    defaultFacultyData
+                );
+
+
+            console.warn(
+                "Using fallback faculty data."
+            );
+
+            return facultyList;
+
+        }
+
+    }
+
+    function getFacultyIdFromButton(
+        button,
+        index
+    ) {
+
+        let facultyId =
+            button.getAttribute(
+                "data-faculty"
+            );
+
+
+        if (!facultyId) {
+
+            facultyId =
+                button.getAttribute(
+                    "data-id"
+                );
+
+        }
+
+        if (!facultyId) {
+
+            facultyId =
+                button.getAttribute(
+                    "data-profile"
+                );
+
+        }
+
+
+        if (!facultyId) {
+
+            facultyId =
+                "faculty-" +
+                String(index + 1)
+                    .padStart(2, "0");
+
+        }
+
+        return facultyId;
+
+    }
+
+    function getFacultyForButton(
+        button,
+        index
+    ) {
+
+        const facultyId =
+            getFacultyIdFromButton(
+                button,
+                index
+            );
+
+
+        let faculty =
+            facultyData[facultyId];
+
+        if (!faculty) {
+
+            const numericId =
+                facultyId
+                    .replace(
+                        "faculty-",
+                        ""
+                    );
+
+
+            faculty =
+                facultyData[numericId];
+
+        }
+
+        if (
+            !faculty &&
+            facultyList[index]
+        ) {
+
+            faculty =
+                facultyList[index];
+
+        }
+
+        if (!faculty) {
+
+            const card =
+                button.closest(
+                    ".faculty-card, .faculty-item, article"
+                );
+
+
+            const cardName =
+                card?.querySelector(
+                    "h2, h3, h4, .faculty-name"
+                )?.textContent?.trim();
+
+
+            const cardPosition =
+                card?.querySelector(
+                    ".faculty-position, .faculty-role, .faculty-title"
+                )?.textContent?.trim();
+
+            faculty = {
+
+                id:
+                    facultyId,
+
+
+                name:
+                    cardName ||
+                    "Faculty Name",
+
+
+                position:
+                    cardPosition ||
+                    "Faculty Member",
+
+
+                program:
+                    "Program",
+
+
+                specialization:
+                    "Specialization to be provided",
+
+
+                email:
+                    "Email to be provided",
+
+
+                education:
+                    "Educational background to be provided"
+
+            };
+
+        }
+
+        return faculty;
+
+    }
+
+    function attachProfileButtons() {
+
+        const profileButtons =
+            document.querySelectorAll(
+                ".view-profile, [data-faculty], [data-id], [data-profile]"
+            );
+
+
+        let profileButtonCount =
+            0;
+
+        profileButtons.forEach(
+            function (button, index) {
+
+                const buttonText =
+                    button.textContent
+                        .trim()
+                        .toLowerCase();
+
+                if (
+                    !buttonText.includes(
+                        "view profile"
+                    ) &&
+                    !button.classList.contains(
+                        "view-profile"
+                    )
+                ) {
+
+                    return;
 
                 }
 
 
-                if (!facultyId) {
+                profileButtonCount++;
 
-                    facultyId =
-                        button.getAttribute(
-                            "data-profile"
-                        );
+                if (
+                    button.dataset
+                        .facultyListenerAttached ===
+                    "true"
+                ) {
 
-                }
-
-
-                /*
-                 * If there is no ID,
-                 * use the card/button order.
-                 */
-
-                if (!facultyId) {
-
-                    facultyId =
-                        "faculty-" +
-                        String(
-                            index + 1
-                        ).padStart(
-                            2,
-                            "0"
-                        );
+                    return;
 
                 }
 
-
-                /* =====================================
-                   GET FACULTY DATA
-                   ===================================== */
-
-                let faculty =
-                    facultyData[facultyId];
+                button.dataset
+                    .facultyListenerAttached =
+                    "true";
 
 
-                /*
-                 * Fallback if the ID is not found.
-                 */
+                button.addEventListener(
+                    "click",
+                    function (event) {
 
-                if (!faculty) {
+                        event.preventDefault();
 
-                    const card =
-                        button.closest(
-                            ".faculty-card, .faculty-item, article"
+                        event.stopPropagation();
+
+
+                        const faculty =
+                            getFacultyForButton(
+                                button,
+                                index
+                            );
+
+
+                        openFacultyModal(
+                            faculty
                         );
 
-
-                    const cardName =
-                        card?.querySelector(
-                            "h2, h3, h4, .faculty-name"
-                        )?.textContent?.trim();
-
-
-                    const cardPosition =
-                        card?.querySelector(
-                            ".faculty-position, .faculty-role, .faculty-title"
-                        )?.textContent?.trim();
-
-
-                    faculty = {
-
-                        name:
-                            cardName ||
-                            "Faculty Name",
-
-                        position:
-                            cardPosition ||
-                            "Faculty Member",
-
-                        program:
-                            "Program",
-
-                        specialization:
-                            "Specialization to be provided",
-
-                        email:
-                            "Email to be provided",
-
-                        education:
-                            "Educational background to be provided"
-
-                    };
-
-                }
-
-
-                /* =====================================
-                   OPEN FACULTY PROFILE
-                   ===================================== */
-
-                openFacultyModal(faculty);
+                    }
+                );
 
             }
         );
 
-    });
+        console.log(
+            "View Profile buttons detected:",
+            profileButtonCount
+        );
 
 
-    /* =====================================================
-       GLOBAL ESCAPE KEY
-       ===================================================== */
+        if (
+            profileButtonCount === 0
+        ) {
+
+            console.warn(
+                "WARNING: No 'View Profile' button was detected."
+            );
+
+            console.warn(
+                "Make sure your faculty cards contain a button or link with the text 'View Profile'."
+            );
+
+        }
+
+    }
 
     document.addEventListener(
         "keydown",
         function (event) {
 
-            if (event.key === "Escape") {
+            if (
+                event.key ===
+                "Escape"
+            ) {
 
                 const modal =
                     document.getElementById(
                         "ecoastFacultyModal"
                     );
 
+
                 if (
                     modal &&
-                    modal.style.display !== "none"
+                    modal.style.display !==
+                    "none"
                 ) {
 
                     closeFacultyModal();
@@ -865,28 +1150,21 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     );
 
+    async function initializeFaculties() {
 
-    /* =====================================================
-       DEBUG INFORMATION
-       ===================================================== */
+        createFacultyModal();
 
-    console.log(
-        "View Profile buttons detected:",
-        profileButtonCount
-    );
+        await loadFaculties();
+
+        attachProfileButtons();
 
 
-    if (profileButtonCount === 0) {
-
-        console.warn(
-            "WARNING: No 'View Profile' button was detected."
-        );
-
-        console.warn(
-            "Make sure your faculty cards contain a button or link with the text 'View Profile'."
+        console.log(
+            "ECOAST HUB Faculty Directory initialized."
         );
 
     }
 
+    initializeFaculties();
 
 });
