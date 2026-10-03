@@ -1,446 +1,297 @@
-const FACULTIES_API =
-    "https://ecoasthub.great-site.net/backend/faculties.php";
+document.addEventListener("DOMContentLoaded", () => {
 
-const menuToggle =
-    document.getElementById("menuToggle");
+    console.log("ECOAST HUB Faculties JS loaded");
 
-const navMenu =
-    document.getElementById("navMenu");
+    const API_URL =
+        "https://ecoasthub.great-site.net/backend/faculties.php";
 
-if (menuToggle && navMenu) {
+    const menuToggle =
+        document.getElementById("menuToggle");
 
-    menuToggle.addEventListener("click", () => {
+    const navMenu =
+        document.getElementById("navMenu");
 
-        navMenu.classList.toggle("open");
+    if (menuToggle && navMenu) {
 
-        const isOpen =
-            navMenu.classList.contains("open");
+        menuToggle.addEventListener("click", () => {
 
-        menuToggle.setAttribute(
-            "aria-expanded",
-            String(isOpen)
-        );
+            navMenu.classList.toggle("active");
 
-    });
+            menuToggle.classList.toggle("active");
 
-    navMenu
-        .querySelectorAll("a")
-        .forEach(link => {
+        });
+
+    }
+
+    if (navMenu) {
+
+        const navLinks =
+            navMenu.querySelectorAll("a");
+
+        navLinks.forEach(link => {
 
             link.addEventListener("click", () => {
 
-                navMenu.classList.remove("open");
+                navMenu.classList.remove("active");
 
-                menuToggle.setAttribute(
-                    "aria-expanded",
-                    "false"
-                );
+                if (menuToggle) {
+
+                    menuToggle.classList.remove(
+                        "active"
+                    );
+
+                }
 
             });
 
         });
 
-}
-
-const facultyCards =
-    document.querySelectorAll(
-        ".faculty-card"
-    );
-
-let backendFaculties = [];
-let backendFacultiesByName = {};
-let backendFacultiesById = {};
-
-function normalizeName(name) {
-
-    return String(name || "")
-        .trim()
-        .replace(/\s+/g, " ")
-        .toLowerCase();
-
-}
-
-function normalizeFaculty(item) {
-
-    if (!item) {
-        return null;
     }
 
+    async function loadFaculties() {
 
-    return {
+        try {
 
-        id:
-            item.id ?? null,
-
-        name:
-            item.name ||
-            "",
-
-        position:
-            item.position ||
-            "",
-
-        department:
-            item.department ||
-            "",
-
-        specialization:
-            item.specialization ||
-            "",
-
-        image:
-            item.image ||
-            "",
-
-        description:
-            item.description ||
-            "",
-
-        displayOrder:
-            item.display_order ??
-            null
-
-    };
-
-}
-
-async function loadFaculties() {
-
-    console.log(
-        "Loading faculties from:",
-        FACULTIES_API
-    );
-
-
-    try {
-
-        const response =
-            await fetch(
-                FACULTIES_API,
-                {
+            const response =
+                await fetch(API_URL, {
                     method: "GET",
-
                     headers: {
-                        "Accept":
-                            "application/json"
-                    },
-
-                    cache: "no-store"
-                }
-            );
+                        "Accept": "application/json"
+                    }
+                });
 
 
-        if (!response.ok) {
+            if (!response.ok) {
 
-            throw new Error(
-                "HTTP " +
-                response.status
-            );
-
-        }
-
-
-        const result =
-            await response.json();
-
-
-        console.log(
-            "Faculties API response:",
-            result
-        );
-
-
-        if (
-            !result ||
-            result.success !== true
-        ) {
-
-            throw new Error(
-                result?.message ||
-                "Faculties API returned an unsuccessful response."
-            );
-
-        }
-
-        const records =
-            Array.isArray(result.data)
-                ? result.data
-                : [];
-
-
-        backendFaculties =
-            records
-                .map(normalizeFaculty)
-                .filter(Boolean);
-
-
-        backendFacultiesByName = {};
-        backendFacultiesById = {};
-
-
-        backendFaculties.forEach(
-            faculty => {
-
-                const normalizedName =
-                    normalizeName(
-                        faculty.name
-                    );
-
-
-                if (normalizedName) {
-
-                    backendFacultiesByName[
-                        normalizedName
-                    ] = faculty;
-
-                }
-
-                if (
-                    faculty.id !== null &&
-                    faculty.id !== undefined
-                ) {
-
-                    backendFacultiesById[
-                        String(faculty.id)
-                    ] = faculty;
-
-                }
+                throw new Error(
+                    `HTTP error: ${response.status}`
+                );
 
             }
-        );
 
-        console.log(
-            "Backend faculty records:",
-            backendFaculties.length
-        );
+            const result =
+                await response.json();
 
-
-        if (
-            backendFaculties.length === 0
-        ) {
 
             console.log(
-                "Faculty table is currently empty. Existing HTML faculty cards remain active."
+                "Faculties API:",
+                result
+            );
+
+
+            if (!result.success) {
+
+                console.error(
+                    "Faculties API error:",
+                    result.message ||
+                    "Unknown error."
+                );
+
+                return;
+
+            }
+
+            if (
+                !Array.isArray(result.data) ||
+                result.data.length === 0
+            ) {
+
+                console.log(
+                    "Faculty database is empty. Existing HTML cards preserved."
+                );
+
+                return;
+
+            }
+
+
+            updateFacultyCards(
+                result.data
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "Failed to load faculty data:",
+                error
             );
 
         }
 
-        return backendFaculties;
-
-    } catch (error) {
-
-        console.warn(
-            "Unable to load faculties from backend.",
-            error
-        );
-
-        backendFaculties = [];
-        backendFacultiesByName = {};
-        backendFacultiesById = {};
-
-        return [];
-
     }
 
-}
-
-function findBackendFaculty(card) {
-
-    if (!card) {
-        return null;
-    }
-
-    const cardId =
-        card.dataset.id ||
-        card.dataset.faculty;
-
-    if (cardId) {
-
-        const foundById =
-            backendFacultiesById[
-                String(cardId)
-            ];
-
-
-        if (foundById) {
-
-            return foundById;
-
-        }
-
-    }
-
-    const cardName =
-        card.dataset.name ||
-        card.querySelector("h3")
-            ?.textContent
-            ?.trim();
-
-    if (!cardName) {
-
-        return null;
-
-    }
-
-    return (
-        backendFacultiesByName[
-            normalizeName(cardName)
-        ] ||
-        null
-    );
-
-}
-
-function applyBackendData() {
-
-    if (
-        backendFaculties.length === 0
+    function updateFacultyCards(
+        faculties
     ) {
 
-        return;
-
-    }
-
-    facultyCards.forEach(card => {
-
-        const backendFaculty =
-            findBackendFaculty(card);
+        const cards =
+            document.querySelectorAll(
+                ".faculty-card"
+            );
 
 
-        if (!backendFaculty) {
+        if (!cards.length) {
+
+            console.log(
+                "No faculty cards found in the HTML."
+            );
 
             return;
 
         }
 
-        const nameElement =
-            card.querySelector("h3");
+        faculties.forEach(
+            (faculty, index) => {
 
-        if (
-            nameElement &&
-            backendFaculty.name
-        ) {
-
-            nameElement.textContent =
-                backendFaculty.name;
-
-        }
-
-        const positionElement =
-            card.querySelector(
-                ".faculty-card-content p"
-            );
+                if (!cards[index]) {
+                    return;
+                }
 
 
-        if (
-            positionElement &&
-            backendFaculty.position
-        ) {
+                const card =
+                    cards[index];
 
-            positionElement.textContent =
-                backendFaculty.position;
-
-        }
-
-        const programBadge =
-            card.querySelector(
-                ".faculty-program-badge"
-            );
+                const nameElement =
+                    card.querySelector("h3");
 
 
-        if (
-            programBadge &&
-            backendFaculty.department
-        ) {
+                if (
+                    nameElement &&
+                    faculty.name
+                ) {
 
-            programBadge.textContent =
-                backendFaculty.department;
+                    nameElement.textContent =
+                        faculty.name;
 
-        }
-
-        const facultyLabel =
-            card.querySelector(
-                ".faculty-label"
-            );
-
-
-        if (
-            facultyLabel &&
-            backendFaculty.department
-        ) {
-
-            facultyLabel.textContent =
-                backendFaculty.department;
-
-        }
-        
-        const imageElement =
-            card.querySelector(
-                ".faculty-card-image img"
-            );
+                }
+                
+                const positionElement =
+                    card.querySelector(
+                        ".faculty-card-content p"
+                    );
 
 
-        if (
-            imageElement &&
-            backendFaculty.image
-        ) {
+                if (
+                    positionElement &&
+                    faculty.position
+                ) {
 
-            imageElement.src =
-                backendFaculty.image;
+                    positionElement.textContent =
+                        faculty.position;
 
-            imageElement.alt =
-                backendFaculty.name;
+                }
 
-        }
-
-    });
-
-}
-
-if (
-    "IntersectionObserver" in window
-) {
-
-    const observer =
-        new IntersectionObserver(
-            entries => {
-
-                entries.forEach(entry => {
-
-                    if (
-                        entry.isIntersecting
-                    ) {
-
-                        entry.target.classList.add(
-                            "visible"
-                        );
+                const badgeElement =
+                    card.querySelector(
+                        ".faculty-program-badge"
+                    );
 
 
-                        observer.unobserve(
-                            entry.target
-                        );
+                const labelElement =
+                    card.querySelector(
+                        ".faculty-label"
+                    );
+
+                if (faculty.department) {
+
+                    if (badgeElement) {
+
+                        badgeElement.textContent =
+                            faculty.department;
 
                     }
 
-                });
+                    if (labelElement) {
 
-            },
-            {
-                threshold: 0.12
+                        labelElement.textContent =
+                            faculty.department;
+
+                    }
+
+                }
+
+                const imageElement =
+                    card.querySelector("img");
+
+
+                if (
+                    imageElement &&
+                    faculty.image
+                ) {
+
+                    imageElement.src =
+                        faculty.image;
+
+                    imageElement.alt =
+                        faculty.name ||
+                        "Faculty Member";
+
+                }
+
             }
         );
 
-    facultyCards.forEach(card => {
+    }
 
-        observer.observe(card);
+    const revealElements =
+        document.querySelectorAll(
+            ".faculty-card, .section-title"
+        );
 
-    });
 
-}
+    if (
+        "IntersectionObserver" in window &&
+        revealElements.length
+    ) {
 
-document
-    .querySelectorAll('a[href="#"]')
-    .forEach(link => {
+        const observer =
+            new IntersectionObserver(
+                entries => {
+
+                    entries.forEach(
+                        entry => {
+
+                            if (
+                                entry.isIntersecting
+                            ) {
+
+                                entry.target.classList.add(
+                                    "visible"
+                                );
+
+
+                                observer.unobserve(
+                                    entry.target
+                                );
+
+                            }
+
+                        }
+                    );
+
+                },
+                {
+                    threshold: 0.12
+                }
+            );
+
+
+        revealElements.forEach(
+            element => {
+
+                observer.observe(
+                    element
+                );
+
+            }
+        );
+
+    }
+
+    document.querySelectorAll(
+        'a[href="#"]'
+    ).forEach(link => {
 
         link.addEventListener(
             "click",
@@ -453,22 +304,6 @@ document
 
     });
 
-loadFaculties()
-    .then(() => {
+    loadFaculties();
 
-        applyBackendData();
-
-
-        console.log(
-            "ECOAST HUB Faculties page initialized successfully."
-        );
-
-    })
-    .catch(error => {
-
-        console.error(
-            "Faculty initialization error:",
-            error
-        );
-
-    });
+});
