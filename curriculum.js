@@ -1,244 +1,68 @@
-/* =========================================================
-   ECOAST HUB - CURRICULUM JAVASCRIPT
-   ========================================================= */
+const CURRICULUM_API =
+    "https://ecoasthub.great-site.net/backend/curriculum.php";
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", () => {
 
-    /* =====================================================
-       PROGRAM DATA
-       ===================================================== */
+    console.log("ECOAST HUB Curriculum JS loaded");
 
-    const programData = {
+    initializeProgramButtons();
+    initializeMobileNavigation();
+    initializeRevealAnimations();
+    loadCurriculumData();
 
-        CE: {
-            code: "CE",
-            name: "Bachelor of Science in Civil Engineering",
-            type: "ENGINEERING PROGRAM",
-            description: "Civil Engineering curriculum and academic requirements."
-        },
+});
 
-        EE: {
-            code: "EE",
-            name: "Bachelor of Science in Electrical Engineering",
-            type: "ENGINEERING PROGRAM",
-            description: "Electrical Engineering curriculum and academic requirements."
-        },
+function initializeProgramButtons() {
 
-        CPE: {
-            code: "CpE",
-            name: "Bachelor of Science in Computer Engineering",
-            type: "ENGINEERING PROGRAM",
-            description: "Computer Engineering curriculum and academic requirements."
-        },
+    const buttons =
+        document.querySelectorAll(".program-button");
 
-        IT: {
-            code: "IT",
-            name: "Bachelor of Science in Information Technology",
-            type: "INFORMATION TECHNOLOGY",
-            description: "Information Technology curriculum and academic requirements."
-        },
+    const programs =
+        document.querySelectorAll(".curriculum-program");
 
-        CS: {
-            code: "CS",
-            name: "Bachelor of Science in Computer Science",
-            type: "COMPUTER SCIENCE",
-            description: "Computer Science curriculum and academic requirements."
-        }
-
-    };
-
-
-    /* =====================================================
-       ELEMENTS
-       ===================================================== */
-
-    const programButtons = document.querySelectorAll(".program-button");
-    const curriculumPrograms = document.querySelectorAll(".curriculum-program");
-
-
-    /* =====================================================
-       SHOW PROGRAM
-       ===================================================== */
-
-    function showProgram(programCode) {
-
-        const selectedProgram = programData[programCode];
-
-        if (!selectedProgram) {
-            return;
-        }
-
-
-        /* -----------------------------------------------
-           UPDATE PROGRAM BUTTONS
-           ----------------------------------------------- */
-
-        programButtons.forEach(function (button) {
-
-            const buttonProgram = button.getAttribute("data-program");
-
-            if (buttonProgram === programCode) {
-                button.classList.add("active");
-            } else {
-                button.classList.remove("active");
-            }
-
-        });
-
-
-        /* -----------------------------------------------
-           SHOW ONLY SELECTED CURRICULUM
-           ----------------------------------------------- */
-
-        curriculumPrograms.forEach(function (program) {
-
-            const contentProgram =
-                program.getAttribute("data-program-content");
-
-            if (contentProgram === programCode) {
-
-                program.classList.add("active");
-
-                /*
-                 * Make sure the selected program is visible.
-                 * This also helps if CSS uses display:none.
-                 */
-                program.style.display = "block";
-
-            } else {
-
-                program.classList.remove("active");
-
-                /*
-                 * Hide the other programs.
-                 */
-                program.style.display = "none";
-
-            }
-
-        });
-
-
-        /* -----------------------------------------------
-           OPTIONAL: UPDATE PAGE TITLE
-           ----------------------------------------------- */
-
-        document.title =
-            selectedProgram.code +
-            " Curriculum | ECOAST HUB";
-
-
-        /* -----------------------------------------------
-           UPDATE URL WITHOUT RELOADING
-           ----------------------------------------------- */
-
-        try {
-
-            const newUrl =
-                window.location.pathname +
-                "?program=" +
-                encodeURIComponent(programCode);
-
-            window.history.replaceState(
-                {},
-                "",
-                newUrl
-            );
-
-        } catch (error) {
-
-            console.log(
-                "URL update was skipped."
-            );
-
-        }
-
-
-        /* -----------------------------------------------
-           SCROLL TO CURRICULUM CONTENT
-           ----------------------------------------------- */
-
-        const selectedContent =
-            document.querySelector(
-                '.curriculum-program[data-program-content="' +
-                programCode +
-                '"]'
-            );
-
-        if (selectedContent) {
-
-            /*
-             * Only scroll when switching programs
-             * after page interaction.
-             */
-        }
-
+    if (!buttons.length || !programs.length) {
+        return;
     }
 
+    buttons.forEach(button => {
 
-    /* =====================================================
-       PROGRAM BUTTON CLICK EVENTS
-       ===================================================== */
+        button.addEventListener("click", () => {
 
-    programButtons.forEach(function (button) {
+            const selectedProgram =
+                normalizeProgram(button.dataset.program);
 
-        button.addEventListener("click", function () {
+            buttons.forEach(item => {
+                item.classList.remove("active");
+            });
 
-            const programCode =
-                button.getAttribute("data-program");
+            button.classList.add("active");
 
-            if (!programCode) {
-                return;
-            }
+            programs.forEach(program => {
 
-            showProgram(programCode);
+                const programCode =
+                    normalizeProgram(
+                        program.dataset.programContent
+                    );
+
+                if (programCode === selectedProgram) {
+
+                    program.classList.add("active");
+
+                } else {
+
+                    program.classList.remove("active");
+
+                }
+
+            });
 
         });
 
     });
 
+}
 
-    /* =====================================================
-       DETECT PROGRAM FROM URL
-       ===================================================== */
-
-    function getProgramFromURL() {
-
-        const params =
-            new URLSearchParams(
-                window.location.search
-            );
-
-        const program =
-            params.get("program");
-
-        if (
-            program &&
-            programData[program.toUpperCase()]
-        ) {
-
-            return program.toUpperCase();
-
-        }
-
-        return "CE";
-
-    }
-
-
-    /* =====================================================
-       INITIALIZE
-       ===================================================== */
-
-    const initialProgram =
-        getProgramFromURL();
-
-    showProgram(initialProgram);
-
-
-    /* =====================================================
-       MOBILE NAVIGATION
-       ===================================================== */
+function initializeMobileNavigation() {
 
     const menuToggle =
         document.getElementById("menuToggle");
@@ -246,207 +70,382 @@ document.addEventListener("DOMContentLoaded", function () {
     const navMenu =
         document.querySelector(".nav-menu");
 
+    if (!menuToggle || !navMenu) {
+        return;
+    }
 
-    if (menuToggle && navMenu) {
+    menuToggle.addEventListener("click", () => {
 
-        menuToggle.addEventListener(
-            "click",
-            function () {
+        navMenu.classList.toggle("active");
 
-                navMenu.classList.toggle("open");
+        menuToggle.classList.toggle("active");
 
-                menuToggle.classList.toggle("active");
+    });
 
-            }
-        );
+    const navLinks =
+        navMenu.querySelectorAll(".nav-link");
 
+    navLinks.forEach(link => {
 
-        /* -----------------------------------------------
-           CLOSE MOBILE MENU AFTER CLICKING LINK
-           ----------------------------------------------- */
+        link.addEventListener("click", () => {
 
-        const navLinks =
-            navMenu.querySelectorAll(".nav-link");
-
-        navLinks.forEach(function (link) {
-
-            link.addEventListener(
-                "click",
-                function () {
-
-                    navMenu.classList.remove("open");
-
-                    menuToggle.classList.remove("active");
-
-                }
-            );
+            navMenu.classList.remove("active");
+            menuToggle.classList.remove("active");
 
         });
 
+    });
+
+}
+
+async function loadCurriculumData() {
+
+    try {
+
+        const response =
+            await fetch(CURRICULUM_API, {
+                method: "GET",
+                headers: {
+                    "Accept": "application/json"
+                }
+            });
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                `HTTP ${response.status}`
+            );
+
+        }
+
+        const result =
+            await response.json();
+
+
+        console.log(
+            "Curriculum backend response:",
+            result
+        );
+
+
+        if (
+            !result ||
+            result.success !== true ||
+            !Array.isArray(result.data)
+        ) {
+
+            console.warn(
+                "Curriculum backend returned no usable data."
+            );
+
+            return;
+
+        }
+
+        if (result.data.length === 0) {
+
+            console.log(
+                "Curriculum backend is connected but currently empty. Existing HTML curriculum will remain visible."
+            );
+
+            return;
+
+        }
+
+        applyCurriculumData(result.data);
+
+
+    } catch (error) {
+
+        console.warn(
+            "Curriculum API could not be loaded. Existing HTML curriculum will remain visible.",
+            error
+        );
+
     }
 
+}
 
-    /* =====================================================
-       CLOSE MOBILE MENU WHEN CLICKING OUTSIDE
-       ===================================================== */
+function applyCurriculumData(data) {
 
-    document.addEventListener(
-        "click",
-        function (event) {
+    if (!Array.isArray(data) || !data.length) {
+        return;
+    }
 
-            if (
-                !menuToggle ||
-                !navMenu
-            ) {
+    data.forEach(item => {
+
+        if (!item) {
+            return;
+        }
+
+
+        const program =
+            normalizeProgram(item.program);
+
+        const courseCode =
+            normalizeText(item.course_code);
+
+        const courseTitle =
+            normalizeText(item.course_title);
+
+
+        if (!program) {
+            return;
+        }
+
+
+        const programContainer =
+            document.querySelector(
+                `.curriculum-program[data-program-content="${program}"]`
+            );
+
+
+        if (!programContainer) {
+            return;
+        }
+
+        const subjects =
+            programContainer.querySelectorAll(".subject");
+
+
+        let matchedSubject = null;
+
+        subjects.forEach(subject => {
+
+            if (matchedSubject) {
                 return;
             }
 
-            const clickedInsideMenu =
-                navMenu.contains(event.target);
+            const codeElement =
+                subject.querySelector("span");
 
-            const clickedToggle =
-                menuToggle.contains(event.target);
+
+            if (!codeElement) {
+                return;
+            }
+
+
+            const existingCode =
+                normalizeText(
+                    codeElement.textContent
+                );
+
 
             if (
-                !clickedInsideMenu &&
-                !clickedToggle
+                existingCode === courseCode &&
+                courseCode !== ""
             ) {
 
-                navMenu.classList.remove("open");
+                matchedSubject = subject;
 
-                menuToggle.classList.remove("active");
+            }
+
+        });
+
+        if (matchedSubject) {
+
+            const titleElement =
+                matchedSubject.querySelector("strong");
+
+            const unitsElement =
+                matchedSubject.querySelector("em");
+
+
+            if (
+                titleElement &&
+                courseTitle
+            ) {
+
+                titleElement.textContent =
+                    item.course_title;
+
+            }
+
+            if (
+                unitsElement &&
+                item.units !== null &&
+                item.units !== undefined &&
+                item.units !== ""
+            ) {
+
+                unitsElement.textContent =
+                    item.units;
 
             }
 
         }
+
+    });
+
+
+    console.log(
+        `Applied ${data.length} curriculum record(s) from backend.`
     );
 
+}
 
-    /* =====================================================
-       HERO / CONTENT REVEAL
-       ===================================================== */
+function normalizeProgram(value) {
 
-    const revealElements =
-        document.querySelectorAll(
-            ".section-heading, " +
-            ".program-buttons, " +
-            ".curriculum-program, " +
-            ".curriculum-note, " +
-            ".cta-container"
-        );
+    if (value === null || value === undefined) {
+        return "";
+    }
 
 
-    if ("IntersectionObserver" in window) {
-
-        const observer =
-            new IntersectionObserver(
-                function (entries) {
-
-                    entries.forEach(
-                        function (entry) {
-
-                            if (entry.isIntersecting) {
-
-                                entry.target.classList.add(
-                                    "visible"
-                                );
-
-                                observer.unobserve(
-                                    entry.target
-                                );
-
-                            }
-
-                        }
-                    );
-
-                },
-                {
-                    threshold: 0.08
-                }
-            );
+    let program =
+        String(value)
+            .trim()
+            .toUpperCase();
 
 
-        revealElements.forEach(
-            function (element) {
+    if (
+        program === "CPE" ||
+        program === "CPe".toUpperCase() ||
+        program === "COMPUTER ENGINEERING"
+    ) {
 
-                observer.observe(element);
-
-            }
-        );
-
-    } else {
-
-        revealElements.forEach(
-            function (element) {
-
-                element.classList.add(
-                    "visible"
-                );
-
-            }
-        );
+        return "CPE";
 
     }
 
 
-    /* =====================================================
-       SUBJECT HOVER EFFECT
-       ===================================================== */
+    if (
+        program === "CE" ||
+        program === "CIVIL ENGINEERING"
+    ) {
 
-    const subjects =
+        return "CE";
+
+    }
+
+
+    if (
+        program === "EE" ||
+        program === "ELECTRICAL ENGINEERING"
+    ) {
+
+        return "EE";
+
+    }
+
+
+    if (
+        program === "IT" ||
+        program === "INFORMATION TECHNOLOGY"
+    ) {
+
+        return "IT";
+
+    }
+
+
+    if (
+        program === "CS" ||
+        program === "COMPUTER SCIENCE"
+    ) {
+
+        return "CS";
+
+    }
+
+
+    return program;
+
+}
+
+function normalizeText(value) {
+
+    if (value === null || value === undefined) {
+        return "";
+    }
+
+    return String(value)
+        .trim()
+        .replace(/\s+/g, " ")
+        .toUpperCase();
+
+}
+
+function initializeRevealAnimations() {
+
+    const elements =
         document.querySelectorAll(
-            ".subject"
+            ".section-heading, .program-button, .curriculum-program, .curriculum-note, .cta-section"
         );
 
-    subjects.forEach(function (subject) {
 
-        subject.addEventListener(
-            "mouseenter",
-            function () {
+    if (!elements.length) {
+        return;
+    }
 
-                subject.classList.add(
-                    "subject-hover"
-                );
 
+    if (!("IntersectionObserver" in window)) {
+
+        elements.forEach(element => {
+            element.classList.add("visible");
+        });
+
+        return;
+
+    }
+
+
+    const observer =
+        new IntersectionObserver(
+            entries => {
+
+                entries.forEach(entry => {
+
+                    if (entry.isIntersecting) {
+
+                        entry.target.classList.add(
+                            "visible"
+                        );
+
+                        observer.unobserve(
+                            entry.target
+                        );
+
+                    }
+
+                });
+
+            },
+            {
+                threshold: 0.12
             }
         );
 
 
-        subject.addEventListener(
-            "mouseleave",
-            function () {
+    elements.forEach(element => {
 
-                subject.classList.remove(
-                    "subject-hover"
-                );
-
-            }
-        );
+        observer.observe(element);
 
     });
 
+}
 
-    /* =====================================================
-       PREVENT EMPTY LINKS FROM JUMPING
-       ===================================================== */
+document.addEventListener("click", event => {
 
-    const emptyLinks =
-        document.querySelectorAll(
-            'a[href="#"]'
-        );
+    const link =
+        event.target.closest("a[href='#']");
 
-    emptyLinks.forEach(function (link) {
+    if (!link) {
+        return;
+    }
 
-        link.addEventListener(
-            "click",
-            function (event) {
-
-                event.preventDefault();
-
-            }
-        );
-
-    });
+    event.preventDefault();
 
 });
+
+window.addEventListener(
+    "error",
+    event => {
+
+        console.warn(
+            "ECOAST Curriculum page error:",
+            event.message
+        );
+
+    }
+);
